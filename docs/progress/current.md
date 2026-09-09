@@ -39,6 +39,8 @@ tile generation now supplies the release bounds and uses an on-disk store to red
 Operator guidance also preserves gateway-readable ownership after atomic project configuration writes.
 The retry proved Valhalla's missing `traffic.tar` warning harmless but exposed tilemaker's separately distributed
 coastline/landcover inputs. A reproducible helper now snapshots those sources and the build verifies their bundle.
+The offline Valhalla invocation now disables its server after graph generation so the release pipeline exits and
+continues to Photon instead of remaining attached to a successfully built routing service.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

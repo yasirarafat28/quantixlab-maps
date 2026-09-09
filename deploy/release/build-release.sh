@@ -48,7 +48,7 @@ rm -rf "$target/tilemaker-assets" "$target/tilemaker-store" "$target/tilemaker-a
 pmtiles verify "$target/tiles/region.pmtiles"; pmtiles show "$target/tiles/region.pmtiles" >"$target/tiles/region.metadata.txt"
 cp "$target/region.osm.pbf" "$target/valhalla/region.osm.pbf"
 docker run --rm -v "$target/valhalla:/custom_files" -e tile_file=/custom_files/region.osm.pbf -e force_rebuild=True \
-  -e build_admins=True -e build_time_zones=True -e use_default_speeds_config=True "$VALHALLA_IMAGE"
+  -e build_admins=True -e build_time_zones=True -e use_default_speeds_config=True -e serve_tiles=False "$VALHALLA_IMAGE"
 curl --fail --location --retry 4 --continue-at - --output "$target/photon-source.zst" "$PHOTON_DUMP_URL"
 echo "$PHOTON_DUMP_SHA256  $target/photon-source.zst" | sha256sum --check -
 chown 10001:10001 "$target/photon"; chmod 0750 "$target/photon"

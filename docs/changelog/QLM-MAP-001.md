@@ -24,3 +24,5 @@ Date: 2026-09-09
   shapefile boundary, and corrected project-file ownership plus writable release/artifact directory guidance.
 - Added a checksummed tilemaker coastline/landcover artifact pipeline after production logs proved those resources
   are intentionally external to the container; optional Valhalla live-traffic warnings remain non-blocking.
+- Disabled Valhalla's long-running HTTP service during offline graph generation so a successful build returns control
+  to the release pipeline and proceeds to Photon import.
