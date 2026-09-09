@@ -24,6 +24,8 @@ fix commit `8477811`, retaining the HIGH/CRITICAL gate and allowing both matrix 
 The `v1.0.2` run passed Photon and showed the gateway application dependencies clean, but rejected stale Debian
 packages and unused npm tooling in the old runtime base. The gateway now refreshes its pinned Node 22 base, applies
 Debian security upgrades, and removes npm, Corepack, and Yarn from production while retaining the scan gate.
+The `v1.0.3` release built both images, passed the HIGH/CRITICAL gates, and produced attestations. Its separate main
+CI run exposed stale container-build arguments; CI now uses the same pinned Node, JDK, and JRE inputs as release CI.
 The VPS runbook now covers purchase gates, DNS/firewall/SSH hardening, official Docker installation, protected
 configuration, containerized project administration, data build/archive, rollout, acceptance, and TourBond cutover.
 The README documents ongoing project onboarding, least-privilege keys, quotas, rotation, revocation, health, backups,

@@ -19,3 +19,4 @@ Date: 2026-09-09
   and disabled matrix fail-fast so both image security results remain visible.
 - Refreshed the pinned Node 22 gateway base, applied Debian security upgrades, and removed unused npm, Corepack,
   and Yarn tooling from the production image after the `v1.0.2` scan isolated those findings from the clean app.
+- Aligned the ordinary CI container builds with the pinned inputs proven by the successful `v1.0.3` image release.
