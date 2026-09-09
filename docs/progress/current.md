@@ -19,6 +19,8 @@ Local verification passes TypeScript lint/typecheck/build, 17 tests, OpenAPI/SDK
 audit, shell syntax, and Compose configuration. Container/data builds were not run on the capacity-limited workstation.
 The first `v1.0.0` image run exposed an invalid Trivy Action reference before either image built; the workflow now
 pins the verified `v0.36.0` release commit and requires a new immutable deployment-candidate tag.
+The `v1.0.1` run then rejected Photon 1.2.1 vulnerabilities. Photon is now built from the exact upstream dependency
+fix commit `8477811`, retaining the HIGH/CRITICAL gate and allowing both matrix jobs to report independently.
 The VPS runbook now covers purchase gates, DNS/firewall/SSH hardening, official Docker installation, protected
 configuration, containerized project administration, data build/archive, rollout, acceptance, and TourBond cutover.
 The README documents ongoing project onboarding, least-privilege keys, quotas, rotation, revocation, health, backups,

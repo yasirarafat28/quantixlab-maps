@@ -62,7 +62,7 @@ services:
     networks: [internal]
 
   photon:
-    image: ${PHOTON_IMAGE:?set a digest-pinned Photon 1.2.1 image}
+    image: ${PHOTON_IMAGE:?set a digest-pinned Photon image}
     volumes: ["${MAP_CURRENT_DIR}/photon:/data"]
     restart: unless-stopped
     mem_limit: 8g

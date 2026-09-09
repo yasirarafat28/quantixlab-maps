@@ -15,3 +15,5 @@ Date: 2026-09-09
 - Aligned Git, Dart dependency, and GHCR examples with the confirmed `yasirarafat28` repository namespace.
 - Repaired the image workflow after the first tag exposed an invalid Trivy Action reference, pinning verified
   Trivy Action `v0.36.0` by its immutable commit SHA.
+- Replaced the vulnerable Photon 1.2.1 binary with a reproducible build of upstream dependency-fix commit `8477811`
+  and disabled matrix fail-fast so both image security results remain visible.
