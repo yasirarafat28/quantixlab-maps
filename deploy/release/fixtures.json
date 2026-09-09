@@ -1,0 +1,20 @@
+[
+  {"countryCode":"BD","query":"Dhaka","latitude":23.8103,"longitude":90.4125},
+  {"countryCode":"IN","query":"Delhi","latitude":28.6139,"longitude":77.2090},
+  {"countryCode":"PK","query":"Karachi","latitude":24.8607,"longitude":67.0011},
+  {"countryCode":"NP","query":"Kathmandu","latitude":27.7172,"longitude":85.3240},
+  {"countryCode":"BT","query":"Thimphu","latitude":27.4728,"longitude":89.6390},
+  {"countryCode":"LK","query":"Colombo","latitude":6.9271,"longitude":79.8612},
+  {"countryCode":"MM","query":"Yangon","latitude":16.8409,"longitude":96.1735},
+  {"countryCode":"ID","query":"Jakarta","latitude":-6.2088,"longitude":106.8456},
+  {"countryCode":"PH","query":"Manila","latitude":14.5995,"longitude":120.9842},
+  {"countryCode":"TH","query":"Bangkok","latitude":13.7563,"longitude":100.5018},
+  {"countryCode":"MY","query":"Kuala Lumpur","latitude":3.1390,"longitude":101.6869},
+  {"countryCode":"SG","query":"Singapore","latitude":1.3521,"longitude":103.8198},
+  {"countryCode":"VN","query":"Hanoi","latitude":21.0278,"longitude":105.8342},
+  {"countryCode":"KH","query":"Phnom Penh","latitude":11.5564,"longitude":104.9282},
+  {"countryCode":"LA","query":"Vientiane","latitude":17.9757,"longitude":102.6331},
+  {"countryCode":"BN","query":"Bandar Seri Begawan","latitude":4.9031,"longitude":114.9398},
+  {"countryCode":"TL","query":"Dili","latitude":-8.5569,"longitude":125.5603},
+  {"countryCode":"MV","query":"Male","latitude":4.1755,"longitude":73.5093}
+]

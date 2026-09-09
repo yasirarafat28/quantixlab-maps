@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+coverage/
+data/
+*.log
+.DS_Store
+.dart_tool/
+packages/dart-client/pubspec.lock

@@ -1,0 +1,42 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions: { contents: read }
+jobs:
+  gateway:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run openapi:check
+      - run: npm run sdk:check
+      - run: npm audit --audit-level=high
+      - run: npm run build
+  dart-client:
+    runs-on: ubuntu-24.04
+    defaults: { run: { working-directory: packages/dart-client } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with: { sdk: stable }
+      - run: dart pub get
+      - run: dart analyze
+  container-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --build-arg NODE_IMAGE=node:22.18.0-bookworm-slim@sha256:752ea8a2f758c34002a0461bd9f1cee4f9a3c36d48494586f60ffce1fc708e0e -t qlm-gateway:test .
+      - run: docker build --build-arg JAVA_IMAGE=eclipse-temurin:21-jre-jammy@sha256:54b382c9d790d3201004d4e3921f4eff7dc7d67e1ce21a2da8d8faaaf63c85fc -f deploy/maps/photon.Dockerfile -t qlm-photon:test .
+  miniature-bangladesh:
+    if: ${{ vars.MINI_DATASET_READY == 'true' }}
+    runs-on: [self-hosted, linux, maps-mini-dataset]
+    steps:
+      - uses: actions/checkout@v4
+      - run: tests/integration/mini-bangladesh.sh

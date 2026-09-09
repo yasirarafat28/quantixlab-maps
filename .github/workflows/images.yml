@@ -1,0 +1,46 @@
+name: Publish container images
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  attestations: write
+jobs:
+  images:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        include:
+          - name: gateway
+            file: Dockerfile
+            args: NODE_IMAGE=node:22.18.0-bookworm-slim@sha256:752ea8a2f758c34002a0461bd9f1cee4f9a3c36d48494586f60ffce1fc708e0e
+          - name: photon
+            file: deploy/maps/photon.Dockerfile
+            args: JAVA_IMAGE=eclipse-temurin:21-jre-jammy@sha256:54b382c9d790d3201004d4e3921f4eff7dc7d67e1ce21a2da8d8faaaf63c85fc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with: { registry: ghcr.io, username: '${{ github.actor }}', password: '${{ secrets.GITHUB_TOKEN }}' }
+      - uses: docker/build-push-action@v6
+        id: build
+        with:
+          context: .
+          file: '${{ matrix.file }}'
+          build-args: '${{ matrix.args }}'
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: 'ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ github.ref_name }}'
+      - uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: 'ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ github.ref_name }}'
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
+      - uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: 'ghcr.io/${{ github.repository }}/${{ matrix.name }}'
+          subject-digest: '${{ steps.build.outputs.digest }}'
+          push-to-registry: true

@@ -1,0 +1,13 @@
+# QLM-MAP-001 — Standalone platform foundation
+
+Date: 2026-09-09
+
+- Added normalized assets, geocoding, route, match, matrix, catalog, usage, health, metrics, and documentation APIs.
+- Added scoped publishable/server credentials, atomic file reload, rotation/revocation CLI, Valkey limits and usage.
+- Added private provider networking, Caddy canonical/compatibility domains, digest-enforced container configuration.
+- Added immutable regional builds, multilingual Photon/font preparation, R2 publishing, acceptance, and rollback.
+- Added generated OpenAPI and TypeScript types, Dart/TypeScript clients, CI, image provenance, tests, and operations docs.
+- Kept large regional artifacts and the existing TourBond maps lifecycle out of scope for local mutation.
+- Expanded the Ubuntu runbook into a gated, command-oriented VPS bootstrap, deployment, and acceptance procedure.
+- Added README operator guidance for project onboarding, quotas, key rotation/revocation, updates, health, backup,
+  release management, and rollback.

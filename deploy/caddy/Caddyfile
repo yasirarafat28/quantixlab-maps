@@ -1,0 +1,15 @@
+{$MAP_DOMAIN}, {$MAP_COMPAT_DOMAIN} {
+  encode zstd gzip
+  # Gateway emits the privacy-safe access log; avoid duplicating query strings at the edge.
+  log { output discard }
+
+  @internal path /internal/*
+  respond @internal 404
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options nosniff
+    Referrer-Policy no-referrer
+  }
+  reverse_proxy gateway:8080
+}
