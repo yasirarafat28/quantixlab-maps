@@ -21,6 +21,10 @@ The VPS runbook now covers purchase gates, DNS/firewall/SSH hardening, official 
 configuration, containerized project administration, data build/archive, rollout, acceptance, and TourBond cutover.
 The README documents ongoing project onboarding, least-privilege keys, quotas, rotation, revocation, health, backups,
 updates, and incident rollback.
+Release verification now excludes generated package build output consistently, preventing the root lint command from
+re-linting emitted JavaScript with the wrong environment assumptions.
+The deployment examples now use the confirmed personal GitHub/GHCR namespace `yasirarafat28`; the public product
+domain and package names remain under the Quantix Lab brand.
 
 ### Next
 Resolve published gateway/Photon image digests, approve the font and Photon sources, build `YYYY-MM-DD.N` on the new

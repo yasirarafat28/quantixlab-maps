@@ -8,9 +8,9 @@ VALKEY_HEALTH_PASSWORD=replace-me
 OPERATOR_PORT=8080
 VALHALLA_THREADS=6
 # Resolve and approve linux/amd64 or linux/arm64 manifests before deployment.
-GATEWAY_IMAGE=ghcr.io/quantixlab/maps-gateway@sha256:REPLACE
+GATEWAY_IMAGE=ghcr.io/yasirarafat28/quantixlab-maps/gateway@sha256:REPLACE
 MARTIN_IMAGE=ghcr.io/maplibre/martin:1.15.0@sha256:84f406ac96839aad3ea06ddaa68ef7617ed55305c21038c182d59f100e48dd6d
-PHOTON_IMAGE=ghcr.io/quantixlab/photon@sha256:REPLACE
+PHOTON_IMAGE=ghcr.io/yasirarafat28/quantixlab-maps/photon@sha256:REPLACE
 VALHALLA_IMAGE=ghcr.io/valhalla/valhalla-scripted:3.8.0@sha256:6e21b8e21e91a82eac47368fdf7f8642708f43273b0ab9eee38cae512b95a361
 VALKEY_IMAGE=valkey/valkey:8.1.3-alpine@sha256:d827e7f7552cdee40cc7482dbae9da020f42bc47669af6f71182a4ef76a22773
 CADDY_IMAGE=caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d

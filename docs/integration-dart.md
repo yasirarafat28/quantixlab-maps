@@ -5,7 +5,7 @@ Depend on a signed Git tag until the package is published:
 ```yaml
 quantixlab_maps:
   git:
-    url: https://github.com/QuantixLab/quantixlab-maps.git
+    url: https://github.com/yasirarafat28/quantixlab-maps.git
     ref: v1.0.0
     path: packages/dart-client
 ```

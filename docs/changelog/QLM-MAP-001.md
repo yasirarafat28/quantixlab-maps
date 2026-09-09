@@ -11,3 +11,5 @@ Date: 2026-09-09
 - Expanded the Ubuntu runbook into a gated, command-oriented VPS bootstrap, deployment, and acceptance procedure.
 - Added README operator guidance for project onboarding, quotas, key rotation/revocation, updates, health, backup,
   release management, and rollback.
+- Corrected the repository lint boundary so generated package distributions are excluded at every nesting level.
+- Aligned Git, Dart dependency, and GHCR examples with the confirmed `yasirarafat28` repository namespace.
