@@ -13,3 +13,5 @@ Date: 2026-09-09
   release management, and rollback.
 - Corrected the repository lint boundary so generated package distributions are excluded at every nesting level.
 - Aligned Git, Dart dependency, and GHCR examples with the confirmed `yasirarafat28` repository namespace.
+- Repaired the image workflow after the first tag exposed an invalid Trivy Action reference, pinning verified
+  Trivy Action `v0.36.0` by its immutable commit SHA.
