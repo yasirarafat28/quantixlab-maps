@@ -122,8 +122,9 @@ For every gateway or configuration release:
 5. Back up `/etc/quantixlab-maps`, pull images, recreate the stack, and check readiness and metrics.
 6. Keep the prior Git tag, image digests, and dataset release available for rollback.
 
-For monthly data updates, use [data releases](docs/data-releases.md): preflight, build a new immutable release,
-publish it to R2, roll it out, and archive acceptance evidence. Never edit `current` or an active Photon index.
+For monthly data updates, use [data releases](docs/data-releases.md): snapshot tilemaker assets, preflight, build a
+new immutable release, publish it to R2, roll it out, and archive acceptance evidence. Never edit `current` or an
+active Photon index.
 
 ## Health, backup, and emergency response
 

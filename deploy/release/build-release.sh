@@ -6,6 +6,8 @@ release_id="$1"; map_root="$2"; scripts="$(cd "$(dirname "$0")" && pwd)"
 [[ "$release_id" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}\.[0-9]+$ ]] || { echo 'release ID must be YYYY-MM-DD.N' >&2; exit 64; }
 "$scripts/preflight.sh" "$map_root"
 : "${PHOTON_DUMP_URL:?set immutable Photon dump URL}"; : "${PHOTON_DUMP_SHA256:?set Photon SHA-256}"
+: "${TILEMAKER_ASSETS_URL:?set immutable tilemaker assets URL}"
+: "${TILEMAKER_ASSETS_SHA256:?set tilemaker assets SHA-256}"
 : "${PHOTON_IMAGE:?set digest-pinned Photon image}"; : "${VALHALLA_IMAGE:?set digest-pinned Valhalla image}"
 : "${MAP_PUBLIC_BASE_URL:=https://maps.quantixlab.dev}"
 [[ "$PHOTON_IMAGE" == *@sha256:* && "$VALHALLA_IMAGE" == *@sha256:* ]] || { echo 'images must be digest pinned' >&2; exit 64; }
@@ -29,10 +31,20 @@ for country in "${countries[@]}"; do
 done
 jq -s . "$target/source-manifest.ndjson" >"$target/source-manifest.json"; rm "$target/source-manifest.ndjson"
 osmium merge "$target"/source/*.osm.pbf --overwrite --output "$target/region.osm.pbf"
-mkdir -p "$target/tilemaker-store"
-docker run --rm -v "$target:/data" "$tilemaker" /data/region.osm.pbf --output /data/tiles/region.pmtiles \
+mkdir -p "$target/tilemaker-assets" "$target/tilemaker-store"
+curl --fail --location --retry 4 --output "$target/tilemaker-assets.tar.zst" "$TILEMAKER_ASSETS_URL"
+echo "$TILEMAKER_ASSETS_SHA256  $target/tilemaker-assets.tar.zst" | sha256sum --check -
+tar --use-compress-program=unzstd -xf "$target/tilemaker-assets.tar.zst" -C "$target/tilemaker-assets"
+for required in coastline/water_polygons.shp \
+  landcover/ne_10m_antarctic_ice_shelves_polys/ne_10m_antarctic_ice_shelves_polys.shp \
+  landcover/ne_10m_urban_areas/ne_10m_urban_areas.shp \
+  landcover/ne_10m_glaciated_areas/ne_10m_glaciated_areas.shp; do
+  [[ -f "$target/tilemaker-assets/$required" ]] || { echo "tilemaker asset missing: $required" >&2; exit 65; }
+done
+docker run --rm -v "$target:/data" -w /data/tilemaker-assets "$tilemaker" /data/region.osm.pbf \
+  --output /data/tiles/region.pmtiles --config /usr/src/app/config.json --process /usr/src/app/process.lua \
   --bbox 60,-12,142,38 --store /data/tilemaker-store
-rm -rf "$target/tilemaker-store"
+rm -rf "$target/tilemaker-assets" "$target/tilemaker-store" "$target/tilemaker-assets.tar.zst"
 pmtiles verify "$target/tiles/region.pmtiles"; pmtiles show "$target/tiles/region.pmtiles" >"$target/tiles/region.metadata.txt"
 cp "$target/region.osm.pbf" "$target/valhalla/region.osm.pbf"
 docker run --rm -v "$target/valhalla:/custom_files" -e tile_file=/custom_files/region.osm.pbf -e force_rebuild=True \
@@ -44,7 +56,7 @@ zstd -dc "$target/photon-source.zst" | docker run --rm -i -v "$target/photon:/da
   -country-codes BD,IN,PK,NP,BT,LK,MM,ID,PH,TH,MY,SG,VN,KH,LA,BN,TL,MV \
   -languages en,bn,hi,ur,ne,dz,si,ta,my,id,tl,th,ms,zh,vi,km,lo,pt,tet,dv
 rm "$target/photon-source.zst"; "$scripts/prepare-presentation.sh" "$target" "$MAP_PUBLIC_BASE_URL"
-jq -n --slurpfile sources "$target/source-manifest.json" --arg release "$release_id" --arg created "$(date -u +%FT%TZ)" --arg photon "$PHOTON_IMAGE" --arg valhalla "$VALHALLA_IMAGE" --arg tilemaker "$tilemaker" \
-  '{schemaVersion:1,releaseId:$release,createdAt:$created,bounds:[60,-12,142,38],countries:["BD","IN","PK","NP","BT","LK","MM","ID","PH","TH","MY","SG","VN","KH","LA","BN","TL","MV"],languages:["en","bn","hi","ur","ne","dz","si","ta","my","id","tl","th","ms","zh","vi","km","lo","pt","tet","dv"],sources:$sources[0],images:{photon:$photon,valhalla:$valhalla,tilemaker:$tilemaker}}' >"$target/manifest.json"
+jq -n --slurpfile sources "$target/source-manifest.json" --arg release "$release_id" --arg created "$(date -u +%FT%TZ)" --arg photon "$PHOTON_IMAGE" --arg valhalla "$VALHALLA_IMAGE" --arg tilemaker "$tilemaker" --arg tilemakerAssets "$TILEMAKER_ASSETS_SHA256" \
+  '{schemaVersion:1,releaseId:$release,createdAt:$created,bounds:[60,-12,142,38],countries:["BD","IN","PK","NP","BT","LK","MM","ID","PH","TH","MY","SG","VN","KH","LA","BN","TL","MV"],languages:["en","bn","hi","ur","ne","dz","si","ta","my","id","tl","th","ms","zh","vi","km","lo","pt","tet","dv"],sources:$sources[0],inputs:{tilemakerAssetsSha256:$tilemakerAssets},images:{photon:$photon,valhalla:$valhalla,tilemaker:$tilemaker}}' >"$target/manifest.json"
 (cd "$target" && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum >SHA256SUMS)
 chmod -R go-w "$target"; echo "built immutable release: $target"

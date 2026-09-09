@@ -37,6 +37,8 @@ domain and package names remain under the Quantix Lab brand.
 The first Ubuntu dataset attempt preserved all verified inputs but exposed a missing tilemaker bounding box. Regional
 tile generation now supplies the release bounds and uses an on-disk store to reduce peak memory on the 48 GiB host.
 Operator guidance also preserves gateway-readable ownership after atomic project configuration writes.
+The retry proved Valhalla's missing `traffic.tar` warning harmless but exposed tilemaker's separately distributed
+coastline/landcover inputs. A reproducible helper now snapshots those sources and the build verifies their bundle.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

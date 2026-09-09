@@ -22,3 +22,5 @@ Date: 2026-09-09
 - Aligned the ordinary CI container builds with the pinned inputs proven by the successful `v1.0.3` image release.
 - Added the regional tilemaker bounding box and SSD-backed store after the first Ubuntu build exposed the missing
   shapefile boundary, and corrected project-file ownership plus writable release/artifact directory guidance.
+- Added a checksummed tilemaker coastline/landcover artifact pipeline after production logs proved those resources
+  are intentionally external to the container; optional Valhalla live-traffic warnings remain non-blocking.

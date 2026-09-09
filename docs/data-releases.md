@@ -5,15 +5,17 @@ PMTiles, Valhalla graph/admin/time-zone data, filtered Photon index, glyphs/lice
 and `SHA256SUMS`. At least active and previous releases stay local; archives are uploaded to private R2 storage.
 
 ```bash
+deploy/release/prepare-tilemaker-assets.sh 2026-09-09.1 /srv/quantixlab-maps/artifacts
 sudo -E deploy/release/preflight.sh /srv/quantixlab-maps
 sudo -E deploy/release/build-release.sh 2026-09-09.1 /srv/quantixlab-maps
 sudo -E deploy/release/publish-release.sh 2026-09-09.1 /srv/quantixlab-maps s3://quantixlab-map-artifacts/releases
 sudo -E deploy/release/rollout-release.sh 2026-09-09.1 /srv/quantixlab-maps /etc/quantixlab-maps/deploy.env
 ```
 
-The build requires approved digest-pinned Photon and Valhalla images, an immutable Photon source URL/checksum, and
-a checksum-pinned Noto glyph bundle containing `LICENSES.json`. It verifies publisher checksums, produces a complete
-SHA-256 inventory, and records tool images in the manifest.
+The build requires approved digest-pinned Photon and Valhalla images, immutable Photon and glyph artifacts, and the
+tilemaker coastline/landcover bundle created by `prepare-tilemaker-assets.sh`. The helper snapshots official OSM
+water polygons and Natural Earth inputs, records each source SHA-256 and license, and emits one checksum-pinned
+archive. The build verifies every artifact and records its checksum plus tool images in the release manifest.
 
 Rollout validates the inventory, atomically swaps `current`, waits for Compose health, and runs public acceptance for
 all 18 countries. Any failure restores the previous symlink and containers. Photon is always imported into the new

@@ -50,7 +50,7 @@ policy in `/etc/ssh/sshd_config.d/99-quantixlab.conf`, run `sudo sshd -t`, and k
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y ca-certificates curl git jq osmium-tool openssl tmux ufw unattended-upgrades zstd
+sudo apt install -y ca-certificates curl git jq osmium-tool openssl tmux ufw unattended-upgrades unzip zstd
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -147,13 +147,13 @@ after base-image changes. The wrapper restores gateway-readable ownership after 
 
 ## 8. Build and archive the first dataset
 
-Start `tmux`, choose a release ID such as `YYYY-MM-DD.1`, and export the approved immutable sources. Do not use
-`latest` URLs or guess checksums.
+Start `tmux`, create the coastline/landcover bundle per [data releases](data-releases.md), choose `YYYY-MM-DD.N`, and
+export every approved immutable URL/checksum. Do not use `latest` URLs or guess checksums.
 
 ```bash
 export PHOTON_DUMP_URL='REPLACE_APPROVED_IMMUTABLE_URL' PHOTON_DUMP_SHA256='REPLACE_SHA256'
-export FONT_BUNDLE_URL='REPLACE_APPROVED_IMMUTABLE_URL' FONT_BUNDLE_SHA256='REPLACE_SHA256'
-export MAP_PUBLIC_BASE_URL='https://maps.quantixlab.dev'
+export FONT_BUNDLE_URL='REPLACE_APPROVED_IMMUTABLE_URL' FONT_BUNDLE_SHA256='REPLACE_SHA256' \
+  TILEMAKER_ASSETS_URL='REPLACE_APPROVED_IMMUTABLE_URL' TILEMAKER_ASSETS_SHA256='REPLACE_SHA256' MAP_PUBLIC_BASE_URL='https://maps.quantixlab.dev'
 deploy/release/preflight.sh /srv/quantixlab-maps
 deploy/release/build-release.sh REPLACE_RELEASE_ID /srv/quantixlab-maps
 ```
