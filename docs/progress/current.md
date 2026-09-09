@@ -34,7 +34,10 @@ Release verification now excludes generated package build output consistently, p
 re-linting emitted JavaScript with the wrong environment assumptions.
 The deployment examples now use the confirmed personal GitHub/GHCR namespace `yasirarafat28`; the public product
 domain and package names remain under the Quantix Lab brand.
+The first Ubuntu dataset attempt preserved all verified inputs but exposed a missing tilemaker bounding box. Regional
+tile generation now supplies the release bounds and uses an on-disk store to reduce peak memory on the 48 GiB host.
+Operator guidance also preserves gateway-readable ownership after atomic project configuration writes.
 
 ### Next
-Resolve published gateway/Photon image digests, approve the font and Photon sources, build `YYYY-MM-DD.N` on the new
-Ubuntu server, run regional/device/load acceptance, then migrate TourBond and begin the 90-day alias window.
+Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate
+TourBond and begin the 90-day alias window.

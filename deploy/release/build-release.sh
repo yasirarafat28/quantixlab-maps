@@ -29,7 +29,10 @@ for country in "${countries[@]}"; do
 done
 jq -s . "$target/source-manifest.ndjson" >"$target/source-manifest.json"; rm "$target/source-manifest.ndjson"
 osmium merge "$target"/source/*.osm.pbf --overwrite --output "$target/region.osm.pbf"
-docker run --rm -v "$target:/data" "$tilemaker" /data/region.osm.pbf --output /data/tiles/region.pmtiles
+mkdir -p "$target/tilemaker-store"
+docker run --rm -v "$target:/data" "$tilemaker" /data/region.osm.pbf --output /data/tiles/region.pmtiles \
+  --bbox 60,-12,142,38 --store /data/tilemaker-store
+rm -rf "$target/tilemaker-store"
 pmtiles verify "$target/tiles/region.pmtiles"; pmtiles show "$target/tiles/region.pmtiles" >"$target/tiles/region.metadata.txt"
 cp "$target/region.osm.pbf" "$target/valhalla/region.osm.pbf"
 docker run --rm -v "$target/valhalla:/custom_files" -e tile_file=/custom_files/region.osm.pbf -e force_rebuild=True \

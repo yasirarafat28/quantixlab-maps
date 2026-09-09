@@ -43,9 +43,8 @@ sudo chown deploy:deploy /home/deploy/.ssh/authorized_keys
 sudo chmod 0600 /home/deploy/.ssh/authorized_keys
 ```
 
-Open a second terminal and prove key-based `deploy` login works before disabling root/password SSH. Apply the
-provider's recovery-compatible SSH policy in `/etc/ssh/sshd_config.d/99-quantixlab.conf`, validate with
-`sudo sshd -t`, then reload SSH. Never close the recovery session until the second login succeeds.
+Prove key-based `deploy` login in a second terminal before disabling root/password SSH. Apply the recovery-compatible
+policy in `/etc/ssh/sshd_config.d/99-quantixlab.conf`, run `sudo sshd -t`, and keep recovery open until login succeeds.
 
 ## 4. Base packages and Docker
 
@@ -70,9 +69,8 @@ sudo usermod -aG docker deploy
 sudo docker run --rm hello-world
 ```
 
-Configure Docker log rotation and ensure Docker's data root is on the NVMe volume. Install a reviewed, pinned
-`pmtiles` binary from the official `protomaps/go-pmtiles` release and verify its downloaded SHA-256 before placing it
-in `/usr/local/bin`. Log in again so `deploy` receives Docker-group membership; that group is root-equivalent.
+Configure Docker log rotation and its data root. Install a checksum-verified, pinned official `pmtiles` binary in
+`/usr/local/bin`. Log in again for Docker-group membership; that group is root-equivalent.
 
 Configure UFW only after preserving SSH, then confirm the provider firewall separately:
 
@@ -87,7 +85,7 @@ sudo ufw enable && sudo ufw status verbose
 
 ```bash
 sudo install -d -m 0750 -o deploy -g deploy /opt/quantixlab-maps
-sudo install -d -m 0750 -o root -g docker /srv/quantixlab-maps/releases
+sudo install -d -m 2770 -o root -g docker /srv/quantixlab-maps/{releases,artifacts}
 sudo install -d -m 0700 -o root -g root /etc/quantixlab-maps
 sudo chown deploy:deploy /opt/quantixlab-maps
 git clone https://github.com/yasirarafat28/quantixlab-maps.git /opt/quantixlab-maps
@@ -110,7 +108,8 @@ cp deploy/environment.example /etc/quantixlab-maps/deploy.env
 cp .env.example /etc/quantixlab-maps/maps.env
 cp deploy/maps/users.acl.example /etc/quantixlab-maps/users.acl
 printf '{"schemaVersion":1,"projects":[]}\n' >/etc/quantixlab-maps/projects.json
-chmod 0600 /etc/quantixlab-maps/*
+chmod 0600 /etc/quantixlab-maps/{deploy.env,maps.env,users.acl}
+chown 0:1000 /etc/quantixlab-maps/projects.json && chmod 0640 /etc/quantixlab-maps/projects.json
 ```
 
 Generate distinct values with `openssl rand -base64 48` and store them in a password manager. In `maps.env`, replace
@@ -121,10 +120,7 @@ hashes in `users.acl`. If `valkey-cli` is not installed on the host, run the pin
 `docker run --rm -it --entrypoint valkey-cli "$VALKEY_IMAGE"` and enter `ACL HASH-PASSWORD` there. Validate:
 
 ```bash
-set -a
-source /etc/quantixlab-maps/deploy.env
-source /etc/quantixlab-maps/maps.env
-set +a
+set -a; source /etc/quantixlab-maps/deploy.env; source /etc/quantixlab-maps/maps.env; set +a
 deploy/release/verify-images.sh
 docker compose --env-file /etc/quantixlab-maps/deploy.env -f deploy/compose.yaml config --quiet
 ```
@@ -134,8 +130,11 @@ docker compose --env-file /etc/quantixlab-maps/deploy.env -f deploy/compose.yaml
 Use the gateway image as the operator CLI; this avoids installing Node.js on the host:
 
 ```bash
-map_cli() { docker run --rm --user 0:0 --env-file /etc/quantixlab-maps/maps.env \
-  -v /etc/quantixlab-maps:/etc/quantixlab-maps "$GATEWAY_IMAGE" node dist/cli/index.js "$@"; }
+map_cli() {
+  docker run --rm --user 0:0 --env-file /etc/quantixlab-maps/maps.env \
+    -v /etc/quantixlab-maps:/etc/quantixlab-maps "$GATEWAY_IMAGE" node dist/cli/index.js "$@"
+  result=$?; chown 0:1000 /etc/quantixlab-maps/projects.json; chmod 0640 /etc/quantixlab-maps/projects.json; return "$result"
+}
 map_cli project create tourbond --name TourBond
 map_cli key create tourbond --type publishable --scopes assets:read
 map_cli key create tourbond --type secret \
@@ -143,7 +142,8 @@ map_cli key create tourbond --type secret \
 map_cli config validate
 ```
 
-Each token prints once. Put it directly in the correct secret manager; never save it in the repository.
+Each token prints once; put it directly in the secret manager. The pinned gateway uses UID/GID `1000`; recheck it
+after base-image changes. The wrapper restores gateway-readable ownership after every atomic CLI write.
 
 ## 8. Build and archive the first dataset
 

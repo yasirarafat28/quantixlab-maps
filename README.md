@@ -34,14 +34,19 @@ set -a
 source /etc/quantixlab-maps/deploy.env
 source /etc/quantixlab-maps/maps.env
 set +a
-map_cli() { docker run --rm --user 0:0 --env-file /etc/quantixlab-maps/maps.env \
-  -v /etc/quantixlab-maps:/etc/quantixlab-maps "$GATEWAY_IMAGE" node dist/cli/index.js "$@"; }
+map_cli() {
+  docker run --rm --user 0:0 --env-file /etc/quantixlab-maps/maps.env \
+    -v /etc/quantixlab-maps:/etc/quantixlab-maps "$GATEWAY_IMAGE" node dist/cli/index.js "$@"
+  result=$?; chown 0:1000 /etc/quantixlab-maps/projects.json
+  chmod 0640 /etc/quantixlab-maps/projects.json; return "$result"
+}
 map_cli config validate
 map_cli project list
 ```
 
-The CLI writes `/etc/quantixlab-maps/projects.json` atomically with mode `0600`. The gateway reloads valid changes
-on the next authenticated request and retains its last valid configuration if a reload is invalid.
+The CLI writes `/etc/quantixlab-maps/projects.json` atomically. The wrapper restores owner/group `0:1000` and mode
+`0640`, allowing the pinned non-root gateway to read it. Recheck the image UID/GID after any base-image change. The
+gateway reloads valid changes on the next authenticated request and retains its last valid configuration if invalid.
 
 ### Add a project
 
