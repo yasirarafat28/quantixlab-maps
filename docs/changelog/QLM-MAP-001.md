@@ -17,3 +17,5 @@ Date: 2026-09-09
   Trivy Action `v0.36.0` by its immutable commit SHA.
 - Replaced the vulnerable Photon 1.2.1 binary with a reproducible build of upstream dependency-fix commit `8477811`
   and disabled matrix fail-fast so both image security results remain visible.
+- Refreshed the pinned Node 22 gateway base, applied Debian security upgrades, and removed unused npm, Corepack,
+  and Yarn tooling from the production image after the `v1.0.2` scan isolated those findings from the clean app.
