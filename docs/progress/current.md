@@ -43,6 +43,8 @@ The offline Valhalla invocation now disables its server after graph generation s
 continues to Photon instead of remaining attached to a successfully built routing service.
 The first Photon import exposed an image-layer permission defect: BuildKit created `/app` without directory execute
 bits. The runtime image now creates `/app` as `0755` and verifies JAR readability as the non-root Photon user.
+Photon import/finalization is now an independently resumable stage, preserving successfully completed PMTiles and
+Valhalla outputs after a downstream image or import failure.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

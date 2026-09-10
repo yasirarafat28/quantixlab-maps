@@ -28,3 +28,5 @@ Date: 2026-09-09
   to the release pipeline and proceeds to Photon import.
 - Fixed the Photon runtime image's `/app` directory permissions and added a non-root readability assertion, preventing
   `Unable to access jarfile /app/photon.jar` during import and service startup.
+- Split Photon import/finalization into a validated resumable stage so downstream failures do not require rebuilding
+  the completed vector tiles and Valhalla graph.

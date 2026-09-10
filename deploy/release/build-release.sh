@@ -49,14 +49,4 @@ pmtiles verify "$target/tiles/region.pmtiles"; pmtiles show "$target/tiles/regio
 cp "$target/region.osm.pbf" "$target/valhalla/region.osm.pbf"
 docker run --rm -v "$target/valhalla:/custom_files" -e tile_file=/custom_files/region.osm.pbf -e force_rebuild=True \
   -e build_admins=True -e build_time_zones=True -e use_default_speeds_config=True -e serve_tiles=False "$VALHALLA_IMAGE"
-curl --fail --location --retry 4 --continue-at - --output "$target/photon-source.zst" "$PHOTON_DUMP_URL"
-echo "$PHOTON_DUMP_SHA256  $target/photon-source.zst" | sha256sum --check -
-chown 10001:10001 "$target/photon"; chmod 0750 "$target/photon"
-zstd -dc "$target/photon-source.zst" | docker run --rm -i -v "$target/photon:/data" "$PHOTON_IMAGE" import -import-file - -data-dir /data \
-  -country-codes BD,IN,PK,NP,BT,LK,MM,ID,PH,TH,MY,SG,VN,KH,LA,BN,TL,MV \
-  -languages en,bn,hi,ur,ne,dz,si,ta,my,id,tl,th,ms,zh,vi,km,lo,pt,tet,dv
-rm "$target/photon-source.zst"; "$scripts/prepare-presentation.sh" "$target" "$MAP_PUBLIC_BASE_URL"
-jq -n --slurpfile sources "$target/source-manifest.json" --arg release "$release_id" --arg created "$(date -u +%FT%TZ)" --arg photon "$PHOTON_IMAGE" --arg valhalla "$VALHALLA_IMAGE" --arg tilemaker "$tilemaker" --arg tilemakerAssets "$TILEMAKER_ASSETS_SHA256" \
-  '{schemaVersion:1,releaseId:$release,createdAt:$created,bounds:[60,-12,142,38],countries:["BD","IN","PK","NP","BT","LK","MM","ID","PH","TH","MY","SG","VN","KH","LA","BN","TL","MV"],languages:["en","bn","hi","ur","ne","dz","si","ta","my","id","tl","th","ms","zh","vi","km","lo","pt","tet","dv"],sources:$sources[0],inputs:{tilemakerAssetsSha256:$tilemakerAssets},images:{photon:$photon,valhalla:$valhalla,tilemaker:$tilemaker}}' >"$target/manifest.json"
-(cd "$target" && find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum >SHA256SUMS)
-chmod -R go-w "$target"; echo "built immutable release: $target"
+"$scripts/resume-photon-release.sh" "$release_id" "$map_root" "$tilemaker"
