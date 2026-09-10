@@ -16,9 +16,11 @@ RUN apt-get update && apt-get install --yes --no-install-recommends git \
 FROM ${JAVA_IMAGE}
 RUN apt-get update && apt-get install --yes --no-install-recommends wget \
   && rm -rf /var/lib/apt/lists/* \
-  && useradd --system --uid 10001 --home /data photon
+  && useradd --system --uid 10001 --home /data photon \
+  && install -d -m 0755 /app
 COPY --from=build --chown=10001:10001 --chmod=0444 /tmp/photon.jar /app/photon.jar
 USER 10001
+RUN test -r /app/photon.jar
 EXPOSE 2322
 ENTRYPOINT ["java", "-Xms2g", "-Xmx6g", "-jar", "/app/photon.jar"]
 CMD ["serve", "-data-dir", "/data", "-listen-ip", "0.0.0.0", "-listen-port", "2322", "-default-language", "en", "-max-results", "10", "-query-timeout", "5"]

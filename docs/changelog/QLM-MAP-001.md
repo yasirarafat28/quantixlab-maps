@@ -26,3 +26,5 @@ Date: 2026-09-09
   are intentionally external to the container; optional Valhalla live-traffic warnings remain non-blocking.
 - Disabled Valhalla's long-running HTTP service during offline graph generation so a successful build returns control
   to the release pipeline and proceeds to Photon import.
+- Fixed the Photon runtime image's `/app` directory permissions and added a non-root readability assertion, preventing
+  `Unable to access jarfile /app/photon.jar` during import and service startup.
