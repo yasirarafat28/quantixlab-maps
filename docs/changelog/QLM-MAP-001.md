@@ -35,3 +35,4 @@ Date: 2026-09-09
 - Assigned the private Valkey ACL file to the official container UID/GID while retaining restrictive permissions.
 - Made activation retries idempotent so a failed service startup can be retried without re-hashing Photon runtime
   state that changed after the release passed its initial integrity gate.
+- Removed the invalid explanatory comment from the Valkey ACL template and documented its rule-only format.

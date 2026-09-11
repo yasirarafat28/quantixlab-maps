@@ -1,4 +1,3 @@
 user default off
-# Replace hashes using: valkey-cli ACL HASH-PASSWORD 'long-random-password'
 user maps-gateway on #REPLACE_SHA256_HASH ~rate:* ~usage:* ~concurrency:* ~cache:* +ping +eval +hget +hset +hgetall +hincrby +expire +pexpire +incr +decr +get +setex
 user health on #REPLACE_HEALTH_SHA256_HASH -@all +ping

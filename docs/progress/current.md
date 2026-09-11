@@ -51,6 +51,8 @@ The same rollout showed that the non-root Valkey image needs ownership of its AC
 that file to the image's fixed UID/GID 999 while retaining mode `0600`.
 Idempotent rollout retries now recognize an already-active release instead of re-checking Photon files that its search
 runtime legitimately changes after first activation.
+The Valkey ACL template no longer embeds a comment line, which Valkey 8.1 rejects because ACL files must contain user
+rules only.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

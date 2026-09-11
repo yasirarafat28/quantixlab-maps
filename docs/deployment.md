@@ -117,7 +117,8 @@ Generate distinct values with `openssl rand -base64 48` and store them in a pass
 `MAP_KEY_HASH_SECRET`, `OPERATOR_TOKEN`, and the password inside `REDIS_URL`. In `deploy.env`, set the same Valkey
 password where required, a separate health password, all real `@sha256:` image references, and the production paths.
 Hash the two Valkey passwords with `valkey-cli ACL HASH-PASSWORD`, replace both ACL placeholders, and retain only the
-hashes in `users.acl`. If `valkey-cli` is not installed on the host, run the pinned Valkey image interactively with
+hashes in `users.acl`. ACL files contain only `user` rules; keep explanatory comments outside that file. If
+`valkey-cli` is not installed on the host, run the pinned Valkey image interactively with
 `docker run --rm -it --entrypoint valkey-cli "$VALKEY_IMAGE"` and enter `ACL HASH-PASSWORD` there. Validate:
 
 ```bash
