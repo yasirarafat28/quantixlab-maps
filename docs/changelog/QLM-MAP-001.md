@@ -12,6 +12,9 @@ Date: 2026-09-09
   the complete multilingual v2 cartography remains coupled to a future regional dataset release.
 - Added immutable style-only releases and a dedicated gateway style mount, allowing presentation rollback without
   mutating or rebuilding active PMTiles, Photon, or Valhalla data.
+- Corrected the production matching acceptance assertion so jq evaluates matched points and metrics against the full
+  response object instead of piping them through the encoded-polyline string.
+- Added a deterministic request cadence and six-second retry backoff for public-edge and matrix-quota acceptance.
 - Added generated OpenAPI and TypeScript types, Dart/TypeScript clients, CI, image provenance, tests, and operations docs.
 - Kept large regional artifacts and the existing TourBond maps lifecycle out of scope for local mutation.
 - Expanded the Ubuntu runbook into a gated, command-oriented VPS bootstrap, deployment, and acceptance procedure.

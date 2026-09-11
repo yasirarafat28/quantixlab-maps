@@ -66,6 +66,11 @@ healthy; timestamped matching and the complete 18-country public acceptance pass
 The next gateway candidate sums Valhalla segment times, derives missing edge distance from matched polyline6 geometry,
 uses real GPS elapsed time when provider timing is unavailable, and refuses to invent untimed duration. Legacy style
 templates now prefer English/Latin labels available in the active PMTiles without enabling the v2 basemap.
+Production `v1.0.16` deployment confirmed the new gateway and style overlay healthy. Its acceptance run exposed a
+shell-only jq precedence error in the matching assertion; the assertion is now parenthesized so every predicate is
+evaluated against the response object rather than the encoded-polyline string. Acceptance also uses an explicit
+one-second request cadence plus six-second retry delay so the public edge and default 10-per-minute matrix quota are
+respected during the complete 18-country sweep.
 
 ### Next
 Run the TourBond consumer smoke test, signed-device navigation acceptance, and planned production load test.

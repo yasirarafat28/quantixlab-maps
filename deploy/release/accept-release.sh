@@ -3,7 +3,8 @@ set -euo pipefail
 : "${MAP_PUBLIC_BASE_URL:=https://maps.quantixlab.dev}"; : "${PUBLISHABLE_KEY:?set PUBLISHABLE_KEY}"; : "${SERVER_KEY:?set SERVER_KEY}"
 scripts="$(cd "$(dirname "$0")" && pwd)"; fixtures="$scripts/fixtures.json"
 asset=(-H "X-Quantix-Maps-Key: $PUBLISHABLE_KEY"); server=(-H "Authorization: Bearer $SERVER_KEY")
-request=(curl --fail --silent --show-error --retry 20 --retry-max-time 180)
+curl() { sleep "${ACCEPT_REQUEST_DELAY_SECONDS:-1}"; command curl "$@"; }
+request=(curl --fail --silent --show-error --retry 20 --retry-delay 6 --retry-max-time 180)
 "${request[@]}" "$MAP_PUBLIC_BASE_URL/health/live" >/dev/null
 "${request[@]}" "${asset[@]}" "$MAP_PUBLIC_BASE_URL/v1/styles/light.json" | jq -e '.version == 8' >/dev/null
 "${request[@]}" "${asset[@]}" "$MAP_PUBLIC_BASE_URL/v1/styles/dark.json" | jq -e '.version == 8' >/dev/null
@@ -28,7 +29,7 @@ for profile in DRIVING BICYCLE WALKING; do
   "${request[@]}" "${server[@]}" -H 'Content-Type: application/json' -d "$route" "$MAP_PUBLIC_BASE_URL/v1/routes" | jq -e '.legs | length > 0' >/dev/null
 done
 match='{"profile":"DRIVING","points":[{"latitude":23.810403,"longitude":90.412496},{"latitude":23.809121,"longitude":90.413204},{"latitude":23.809417,"longitude":90.412325}]}'
-"${request[@]}" "${server[@]}" -H 'Content-Type: application/json' -d "$match" "$MAP_PUBLIC_BASE_URL/v1/matches" | jq -e '.encodedPolyline6 | length > 0 and (.matchedPoints | length > 0) and .distanceMeters > 0 and .durationSeconds >= 0' >/dev/null
+"${request[@]}" "${server[@]}" -H 'Content-Type: application/json' -d "$match" "$MAP_PUBLIC_BASE_URL/v1/matches" | jq -e '(.encodedPolyline6 | length > 0) and (.matchedPoints | length > 0) and (.distanceMeters > 0) and (.durationSeconds >= 0)' >/dev/null
 jq -c '.[]' "$fixtures" | while read -r fixture; do
   code="$(jq -r .countryCode <<<"$fixture")"; query="$(jq -r .query <<<"$fixture")"; lat="$(jq -r .latitude <<<"$fixture")"; lon="$(jq -r .longitude <<<"$fixture")"
   "${request[@]}" --get "${server[@]}" --data-urlencode "q=$query" --data-urlencode "countryCode=$code" "$MAP_PUBLIC_BASE_URL/v1/geocode/search" | jq -e '.items | length > 0' >/dev/null

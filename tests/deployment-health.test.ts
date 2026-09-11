@@ -32,7 +32,14 @@ describe('production container health checks', () => {
 
   it('uses bounded retries for rate-limited release acceptance', () => {
     const script = readFileSync('deploy/release/accept-release.sh', 'utf8');
-    expect(script).toContain('--retry 20 --retry-max-time 180');
+    expect(script).toContain('ACCEPT_REQUEST_DELAY_SECONDS:-1');
+    expect(script).toContain('--retry 20 --retry-delay 6 --retry-max-time 180');
     expect(script).not.toContain('--retry-all-errors');
+  });
+
+  it('evaluates every matching predicate against the response object', () => {
+    const script = readFileSync('deploy/release/accept-release.sh', 'utf8');
+    expect(script).toContain("jq -e '(.encodedPolyline6 | length > 0) and (.matchedPoints | length > 0)");
+    expect(script).not.toContain("jq -e '.encodedPolyline6 | length > 0 and");
   });
 });
