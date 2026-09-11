@@ -14,7 +14,7 @@ for profile in DRIVING BICYCLE WALKING; do
   route="$(jq -nc --arg profile "$profile" '{profile:$profile,points:[{latitude:23.8103,longitude:90.4125},{latitude:23.7500,longitude:90.3900}]}')"
   curl --fail --silent --show-error "${server[@]}" -H 'Content-Type: application/json' -d "$route" "$MAP_PUBLIC_BASE_URL/v1/routes" | jq -e '.legs | length > 0' >/dev/null
 done
-match='{"profile":"DRIVING","points":[{"latitude":23.8103,"longitude":90.4125},{"latitude":23.7900,"longitude":90.4050},{"latitude":23.7500,"longitude":90.3900}]}'
+match='{"profile":"DRIVING","points":[{"latitude":23.810403,"longitude":90.412496},{"latitude":23.809121,"longitude":90.413204},{"latitude":23.809417,"longitude":90.412325}]}'
 curl --fail --silent --show-error "${server[@]}" -H 'Content-Type: application/json' -d "$match" "$MAP_PUBLIC_BASE_URL/v1/matches" | jq -e '.encodedPolyline6 | length > 0' >/dev/null
 jq -c '.[]' "$fixtures" | while read -r fixture; do
   code="$(jq -r .countryCode <<<"$fixture")"; query="$(jq -r .query <<<"$fixture")"; lat="$(jq -r .latitude <<<"$fixture")"; lon="$(jq -r .longitude <<<"$fixture")"

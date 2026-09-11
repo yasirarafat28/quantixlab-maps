@@ -19,6 +19,8 @@ query fields into a strict coordinate schema. All 23 tests, lint, type-checking,
 generation, and whitespace validation pass. The deployed Photon adapter, response schema, and cache all pass;
 forward geocoding failed because Express 5 exposes `req.query` as read-only, so validated query data now uses
 response-local state instead.
+Release acceptance now uses a verified road-following Dhaka trace whose sample gaps remain below Valhalla's configured
+2 km breakage limit.
 
 ### Next
 Publish corrected immutable gateway candidate `v1.0.14` and complete live acceptance.
