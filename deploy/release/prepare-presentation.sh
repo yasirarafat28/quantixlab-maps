@@ -16,9 +16,22 @@ tar --use-compress-program=unzstd -xf "$target/font-bundle.tar.zst" -C "$target/
 for script in Latin Bengali Devanagari Arabic Sinhala Tamil Myanmar Thai Khmer Lao Chinese Thaana; do
   jq -e --arg script "$script" '.scripts | index($script)' "$target/fonts/LICENSES.json" >/dev/null || { echo "font bundle lacks $script coverage" >&2; exit 65; }
 done
+for range in 1536-1791 1792-2047 2304-2559 2816-3071 3328-3583 3584-3839 4096-4351 5888-6143 19968-20223; do
+  [[ -s "$target/fonts/Noto Sans Regular/$range.pbf" ]] || {
+    echo "font bundle lacks populated glyph range $range" >&2; exit 65;
+  }
+done
+dataset_version="$(basename "$target")"
 for theme in light dark; do
-  sed "s|__MAP_PUBLIC_BASE_URL__|$public_url|g" "$scripts/../maps/style-$theme.template.json" >"$target/styles/$theme.json"
+  sed -e "s|__MAP_PUBLIC_BASE_URL__|$public_url|g" \
+    "$scripts/../maps/style-$theme-v1.template.json" >"$target/styles/$theme.json"
+  sed -e "s|__MAP_PUBLIC_BASE_URL__|$public_url|g" -e "s|__DATASET_VERSION__|$dataset_version|g" \
+    "$scripts/../maps/style-$theme.template.json" >"$target/styles/$theme-v2.json"
   jq -e '.version == 8 and .sources.region and .glyphs' "$target/styles/$theme.json" >/dev/null
+  jq -e --arg version "$dataset_version" \
+    '.version == 8 and .sources.region and .glyphs and .metadata["quantixlab:dataset"] == $version
+      and ([.layers[].layout?["text-field"]? | tostring] | any(contains("name:latin")))' \
+    "$target/styles/$theme-v2.json" >/dev/null
 done
 printf '{}' >"$target/sprites/default.json"
 printf 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAF/gL+X8j0WQAAAABJRU5ErkJggg==' | base64 -d >"$target/sprites/default.png"

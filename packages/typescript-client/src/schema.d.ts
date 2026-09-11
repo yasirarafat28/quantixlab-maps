@@ -1897,6 +1897,9 @@ export interface paths {
                         points: {
                             latitude: number;
                             longitude: number;
+                            headingDegrees?: number;
+                            headingToleranceDegrees?: number;
+                            radiusMeters?: number;
                         }[];
                         language?: string;
                     };
@@ -1925,6 +1928,12 @@ export interface paths {
                                     durationSeconds: number;
                                     beginShapeIndex: number;
                                     endShapeIndex: number;
+                                    type?: number;
+                                    streetNames?: string[];
+                                    verbalTransitionAlertInstruction?: string;
+                                    verbalPreTransitionInstruction?: string;
+                                    verbalPostTransitionInstruction?: string;
+                                    signText?: string[];
                                 }[];
                             }[];
                         };
@@ -2125,6 +2134,8 @@ export interface paths {
                             longitude: number;
                             timestampSeconds?: number;
                         }[];
+                        gpsAccuracyM?: number;
+                        searchRadiusM?: number;
                     };
                 };
             };
@@ -2143,6 +2154,15 @@ export interface paths {
                             distanceMeters: number;
                             durationSeconds: number;
                             confidence?: number;
+                            matchedPoints: {
+                                latitude: number;
+                                longitude: number;
+                                /** @enum {string} */
+                                matchType: "MATCHED" | "INTERPOLATED" | "UNMATCHED";
+                                edgeIndex?: number;
+                                distanceAlongEdge?: number;
+                                distanceFromTracePointM?: number;
+                            }[];
                         };
                     };
                 };
@@ -2840,6 +2860,9 @@ export interface components {
             points: {
                 latitude: number;
                 longitude: number;
+                headingDegrees?: number;
+                headingToleranceDegrees?: number;
+                radiusMeters?: number;
             }[];
             language?: string;
         };
@@ -2859,6 +2882,12 @@ export interface components {
                     durationSeconds: number;
                     beginShapeIndex: number;
                     endShapeIndex: number;
+                    type?: number;
+                    streetNames?: string[];
+                    verbalTransitionAlertInstruction?: string;
+                    verbalPreTransitionInstruction?: string;
+                    verbalPostTransitionInstruction?: string;
+                    signText?: string[];
                 }[];
             }[];
         };
@@ -2870,6 +2899,8 @@ export interface components {
                 longitude: number;
                 timestampSeconds?: number;
             }[];
+            gpsAccuracyM?: number;
+            searchRadiusM?: number;
         };
         MatchResponse: {
             requestId: string;
@@ -2879,6 +2910,15 @@ export interface components {
             distanceMeters: number;
             durationSeconds: number;
             confidence?: number;
+            matchedPoints: {
+                latitude: number;
+                longitude: number;
+                /** @enum {string} */
+                matchType: "MATCHED" | "INTERPOLATED" | "UNMATCHED";
+                edgeIndex?: number;
+                distanceAlongEdge?: number;
+                distanceFromTracePointM?: number;
+            }[];
         };
         MatrixRequest: {
             /** @enum {string} */

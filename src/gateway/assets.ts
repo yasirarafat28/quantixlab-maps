@@ -12,7 +12,9 @@ export const sendAsset = (root: string, folder: string) => (req: Request, res: R
   const relative = Array.isArray(parameter) ? parameter.join('/') : String(parameter);
   const file = safeFile(root, folder, relative);
   if (!file) { res.sendStatus(404); return; }
-  res.set('Cache-Control', folder === 'styles' ? 'public, max-age=300, stale-while-revalidate=86400' : 'public, max-age=2592000, immutable');
+  res.set('Cache-Control', folder === 'styles'
+    ? 'public, max-age=0, must-revalidate'
+    : 'public, max-age=2592000, immutable');
   res.sendFile(file, (error) => { if (error && !res.headersSent) problem(res, req, 404, 'not-found', 'Asset not found'); });
 };
 

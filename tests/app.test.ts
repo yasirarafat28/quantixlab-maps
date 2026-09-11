@@ -19,7 +19,7 @@ const dependencies = {
   cache: { getOrSet: async (_operation: string, _input: unknown, _dataset: string, _ttl: number, produce: () => Promise<unknown>) => produce() },
   photon: { search: async () => [], reverse: async () => [] },
   valhalla: { route: async () => ({ distanceMeters: 1, durationSeconds: 1, legs: [{ encodedPolyline6: 'x', distanceMeters: 1, durationSeconds: 1, maneuvers: [] }] }),
-    match: async () => ({ encodedPolyline6: 'x', distanceMeters: 1, durationSeconds: 1 }),
+    match: async () => ({ encodedPolyline6: 'x', distanceMeters: 1, durationSeconds: 1, matchedPoints: [] }),
     matrix: async () => ({ distancesMeters: [[1]], durationsSeconds: [[2]] }) }, openapi: { openapi: '3.1.0' },
 } as unknown as AppDependencies;
 const app = createApp(dependencies);

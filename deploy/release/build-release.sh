@@ -41,8 +41,10 @@ for required in coastline/water_polygons.shp \
   landcover/ne_10m_glaciated_areas/ne_10m_glaciated_areas.shp; do
   [[ -f "$target/tilemaker-assets/$required" ]] || { echo "tilemaker asset missing: $required" >&2; exit 65; }
 done
-docker run --rm -v "$target:/data" -w /data/tilemaker-assets "$tilemaker" /data/region.osm.pbf \
-  --output /data/tiles/region.pmtiles --config /usr/src/app/config.json --process /usr/src/app/process.lua \
+docker run --rm -v "$target:/data" -v "$scripts/../maps:/tourbond-config:ro" \
+  -w /data/tilemaker-assets "$tilemaker" /data/region.osm.pbf \
+  --output /data/tiles/region.pmtiles --config /tourbond-config/tilemaker-config.json \
+  --process /tourbond-config/tilemaker-process.lua \
   --bbox 60,-12,142,38 --store /data/tilemaker-store
 rm -rf "$target/tilemaker-assets" "$target/tilemaker-store" "$target/tilemaker-assets.tar.zst"
 pmtiles verify "$target/tiles/region.pmtiles"; pmtiles show "$target/tiles/region.pmtiles" >"$target/tiles/region.metadata.txt"

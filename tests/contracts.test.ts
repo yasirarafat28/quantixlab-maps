@@ -21,4 +21,13 @@ describe('v1 request contracts', () => {
     expect(MatrixRequestSchema.safeParse({ profile: 'DRIVING', sources: Array(25).fill(dhaka), targets: Array(25).fill(dhaka) }).success).toBe(true);
     expect(MatrixRequestSchema.safeParse({ profile: 'DRIVING', sources: Array(25).fill(dhaka), targets: Array(26).fill(dhaka) }).success).toBe(false);
   });
+  it('accepts directional route hints and bounded match uncertainty', () => {
+    expect(RouteRequestSchema.parse({ profile: 'DRIVING', points: [
+      { ...dhaka, headingDegrees: 270, headingToleranceDegrees: 60, radiusMeters: 25 }, dhaka,
+    ] }).points[0]).toMatchObject({ headingDegrees: 270, headingToleranceDegrees: 60, radiusMeters: 25 });
+    expect(MatchRequestSchema.safeParse({ profile: 'DRIVING', points: [dhaka, dhaka],
+      gpsAccuracyM: 8, searchRadiusM: 30 }).success).toBe(true);
+    expect(MatchRequestSchema.safeParse({ profile: 'DRIVING', points: [dhaka, dhaka],
+      searchRadiusM: 101 }).success).toBe(false);
+  });
 });
