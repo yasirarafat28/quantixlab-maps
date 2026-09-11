@@ -45,6 +45,8 @@ The first Photon import exposed an image-layer permission defect: BuildKit creat
 bits. The runtime image now creates `/app` as `0755` and verifies JAR readability as the non-root Photon user.
 Photon import/finalization is now an independently resumable stage, preserving successfully completed PMTiles and
 Valhalla outputs after a downstream image or import failure.
+The first production rollout exposed unquoted comma-containing tmpfs options being split by YAML into a mount path.
+The runtime stack now quotes each tmpfs specification for gateway, Martin, and Valkey.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

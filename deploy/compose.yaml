@@ -18,7 +18,7 @@ services:
     cpus: 1.0
     pids_limit: 256
     read_only: true
-    tmpfs: [/tmp:size=64m,mode=1777]
+    tmpfs: ["/tmp:size=64m,mode=1777"]
     security_opt: [no-new-privileges:true]
     healthcheck:
       test: [CMD, node, -e, "fetch('http://localhost:8080/health/live').then(r=>{if(!r.ok)process.exit(1)})"]
@@ -35,7 +35,7 @@ services:
     mem_limit: 2g
     cpus: 1.0
     read_only: true
-    tmpfs: [/tmp:size=64m,mode=1777]
+    tmpfs: ["/tmp:size=64m,mode=1777"]
     security_opt: [no-new-privileges:true]
     healthcheck:
       test: [CMD, wget, -qO-, http://localhost:3000/catalog]
@@ -88,7 +88,7 @@ services:
     mem_limit: 512m
     cpus: 0.5
     read_only: true
-    tmpfs: [/tmp:size=32m,mode=1777]
+    tmpfs: ["/tmp:size=32m,mode=1777"]
     security_opt: [no-new-privileges:true]
     healthcheck:
       test: [CMD-SHELL, "VALKEYCLI_AUTH=\"$$VALKEY_HEALTH_PASSWORD\" valkey-cli --user health ping | grep PONG"]

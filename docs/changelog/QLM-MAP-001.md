@@ -30,3 +30,5 @@ Date: 2026-09-09
   `Unable to access jarfile /app/photon.jar` during import and service startup.
 - Split Photon import/finalization into a validated resumable stage so downstream failures do not require rebuilding
   the completed vector tiles and Valhalla graph.
+- Quoted comma-containing tmpfs mount specifications so production Compose can create the gateway, Martin, and
+  Valkey services.
