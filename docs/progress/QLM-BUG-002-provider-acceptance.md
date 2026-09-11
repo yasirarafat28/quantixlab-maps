@@ -21,6 +21,8 @@ forward geocoding failed because Express 5 exposes `req.query` as read-only, so 
 response-local state instead.
 Release acceptance now uses a verified road-following Dhaka trace whose sample gaps remain below Valhalla's configured
 2 km breakage limit, and its generated matrix coordinates use valid parenthesized `jq` arithmetic.
+The runner uses bounded `curl` retries for transient and rate-limited responses because regional acceptance performs
+18 matrix requests while the default matrix quota is 10 requests per minute.
 
 ### Next
 Publish corrected immutable gateway candidate `v1.0.14` and complete live acceptance.

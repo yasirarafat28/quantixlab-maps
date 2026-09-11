@@ -29,4 +29,10 @@ describe('production container health checks', () => {
     expect(script).toContain('latitude:($lat + 0.005),longitude:($lon + 0.005)');
     expect(script).not.toContain('latitude:$lat+0.005');
   });
+
+  it('uses bounded retries for rate-limited release acceptance', () => {
+    const script = readFileSync('deploy/release/accept-release.sh', 'utf8');
+    expect(script).toContain('--retry 20 --retry-max-time 180');
+    expect(script).not.toContain('--retry-all-errors');
+  });
 });

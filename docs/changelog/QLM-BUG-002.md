@@ -10,3 +10,4 @@ task: QLM-BUG-002
 - Store parsed GET parameters in response-local state instead of assigning to Express 5's read-only `req.query`.
 - Use a realistic road-following GPS trace in release acceptance so samples stay within Valhalla's 2 km breakage limit.
 - Correct the release acceptance matrix fixture's `jq` arithmetic syntax.
+- Respect `Retry-After` with bounded retries when regional acceptance reaches normal per-operation quotas.
