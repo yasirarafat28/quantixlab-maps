@@ -37,3 +37,5 @@ Date: 2026-09-09
   state that changed after the release passed its initial integrity gate.
 - Removed the invalid explanatory comment from the Valkey ACL template and documented its rule-only format.
 - Corrected the pinned Valkey 8.1.3 health check to use its supported `REDISCLI_AUTH` environment variable.
+- Corrected the Caddy log block syntax and added an edge health check that detects configuration crash loops.
+- Added pinned-image Caddyfile validation to CI.

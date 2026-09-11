@@ -33,6 +33,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: >-
+          docker run --rm
+          -e MAP_DOMAIN=maps.quantixlab.dev
+          -e MAP_COMPAT_DOMAIN=maps.tourbond.quantixlab.dev
+          -v "$PWD/deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
+          caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+          caddy validate --config /etc/caddy/Caddyfile
+      - run: >-
           docker build
           --build-arg NODE_IMAGE=node:22-bookworm-slim@sha256:83f487e0a63425e5b4d146fb5e5be574bcbe1b7b843d3ebafdd95eaf7767a7e5
           -t qlm-gateway:test .

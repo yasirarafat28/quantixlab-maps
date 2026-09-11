@@ -55,6 +55,9 @@ The Valkey ACL template no longer embeds a comment line, which Valkey 8.1 reject
 rules only.
 The Valkey 8.1.3 health check now uses its supported `REDISCLI_AUTH` compatibility variable; the newer
 `VALKEYCLI_AUTH` name is unavailable in that pinned version and caused unauthenticated probes.
+The Caddy log directive now uses valid multiline syntax, and the edge service has an admin-API health check so a
+configuration crash loop cannot be reported as a successful Compose startup. CI validates the Caddyfile with the
+pinned production image before a deployment candidate is accepted.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

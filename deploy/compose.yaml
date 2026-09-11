@@ -114,6 +114,11 @@ services:
     cap_drop: [ALL]
     cap_add: [NET_BIND_SERVICE]
     security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, wget, -qO-, http://localhost:2019/config/]
+      interval: 10s
+      timeout: 3s
+      retries: 10
     networks: [internal, edge]
 
 networks:
