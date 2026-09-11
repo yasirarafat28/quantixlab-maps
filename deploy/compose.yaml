@@ -91,7 +91,7 @@ services:
     tmpfs: ["/tmp:size=32m,mode=1777"]
     security_opt: [no-new-privileges:true]
     healthcheck:
-      test: [CMD-SHELL, "VALKEYCLI_AUTH=\"$$VALKEY_HEALTH_PASSWORD\" valkey-cli --user health ping | grep PONG"]
+      test: [CMD-SHELL, "REDISCLI_AUTH=\"$$VALKEY_HEALTH_PASSWORD\" valkey-cli --user health ping | grep PONG"]
       interval: 10s
       timeout: 3s
       retries: 10

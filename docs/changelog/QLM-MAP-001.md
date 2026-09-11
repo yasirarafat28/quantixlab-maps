@@ -36,3 +36,4 @@ Date: 2026-09-09
 - Made activation retries idempotent so a failed service startup can be retried without re-hashing Photon runtime
   state that changed after the release passed its initial integrity gate.
 - Removed the invalid explanatory comment from the Valkey ACL template and documented its rule-only format.
+- Corrected the pinned Valkey 8.1.3 health check to use its supported `REDISCLI_AUTH` environment variable.

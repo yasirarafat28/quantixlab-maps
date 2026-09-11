@@ -53,6 +53,8 @@ Idempotent rollout retries now recognize an already-active release instead of re
 runtime legitimately changes after first activation.
 The Valkey ACL template no longer embeds a comment line, which Valkey 8.1 rejects because ACL files must contain user
 rules only.
+The Valkey 8.1.3 health check now uses its supported `REDISCLI_AUTH` compatibility variable; the newer
+`VALKEYCLI_AUTH` name is unavailable in that pinned version and caused unauthenticated probes.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate
