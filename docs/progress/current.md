@@ -49,6 +49,8 @@ The first production rollout exposed unquoted comma-containing tmpfs options bei
 The runtime stack now quotes each tmpfs specification for gateway, Martin, and Valkey.
 The same rollout showed that the non-root Valkey image needs ownership of its ACL bind mount; the VPS setup now assigns
 that file to the image's fixed UID/GID 999 while retaining mode `0600`.
+Idempotent rollout retries now recognize an already-active release instead of re-checking Photon files that its search
+runtime legitimately changes after first activation.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

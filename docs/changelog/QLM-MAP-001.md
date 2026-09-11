@@ -33,3 +33,5 @@ Date: 2026-09-09
 - Quoted comma-containing tmpfs mount specifications so production Compose can create the gateway, Martin, and
   Valkey services.
 - Assigned the private Valkey ACL file to the official container UID/GID while retaining restrictive permissions.
+- Made activation retries idempotent so a failed service startup can be retried without re-hashing Photon runtime
+  state that changed after the release passed its initial integrity gate.
