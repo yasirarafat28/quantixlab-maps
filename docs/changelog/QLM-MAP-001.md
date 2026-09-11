@@ -32,3 +32,4 @@ Date: 2026-09-09
   the completed vector tiles and Valhalla graph.
 - Quoted comma-containing tmpfs mount specifications so production Compose can create the gateway, Martin, and
   Valkey services.
+- Assigned the private Valkey ACL file to the official container UID/GID while retaining restrictive permissions.

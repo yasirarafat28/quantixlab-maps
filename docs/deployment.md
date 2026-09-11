@@ -109,6 +109,7 @@ cp .env.example /etc/quantixlab-maps/maps.env
 cp deploy/maps/users.acl.example /etc/quantixlab-maps/users.acl
 printf '{"schemaVersion":1,"projects":[]}\n' >/etc/quantixlab-maps/projects.json
 chmod 0600 /etc/quantixlab-maps/{deploy.env,maps.env,users.acl}
+chown 999:999 /etc/quantixlab-maps/users.acl
 chown 0:1000 /etc/quantixlab-maps/projects.json && chmod 0640 /etc/quantixlab-maps/projects.json
 ```
 

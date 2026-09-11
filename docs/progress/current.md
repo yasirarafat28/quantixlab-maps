@@ -47,6 +47,8 @@ Photon import/finalization is now an independently resumable stage, preserving s
 Valhalla outputs after a downstream image or import failure.
 The first production rollout exposed unquoted comma-containing tmpfs options being split by YAML into a mount path.
 The runtime stack now quotes each tmpfs specification for gateway, Martin, and Valkey.
+The same rollout showed that the non-root Valkey image needs ownership of its ACL bind mount; the VPS setup now assigns
+that file to the image's fixed UID/GID 999 while retaining mode `0600`.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate
