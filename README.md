@@ -17,6 +17,7 @@ use revocable publishable keys; geocoding, routing, matching, matrices, and usag
 - Dataset builds: [data releases](docs/data-releases.md)
 - Monitoring, load gates, and rollback: [operations](docs/operations.md)
 - Endpoint contract: [API reference](docs/api-reference.md)
+- Add another application: [consumer onboarding](docs/consumer-onboarding.md)
 - Consumer examples: [Dart/Flutter](docs/integration-dart.md) and
   [TypeScript/backend](docs/integration-typescript.md)
 
@@ -122,9 +123,9 @@ For every gateway or configuration release:
 5. Back up `/etc/quantixlab-maps`, pull images, recreate the stack, and check readiness and metrics.
 6. Keep the prior Git tag, image digests, and dataset release available for rollback.
 
-For monthly data updates, use [data releases](docs/data-releases.md): snapshot tilemaker assets, preflight, build a
-new immutable release, publish it to R2, roll it out, and archive acceptance evidence. Never edit `current` or an
-active Photon index.
+For monthly updates or country expansion, use [dataset maintenance](docs/data-releases.md): review coverage sources
+and bounds, snapshot tilemaker assets, preflight, build a new immutable release, publish it to R2, roll it out, and
+archive acceptance evidence. Never edit `current` or an active Photon index.
 
 ## Health, backup, and emergency response
 

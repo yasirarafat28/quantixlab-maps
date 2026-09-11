@@ -58,6 +58,10 @@ The Valkey 8.1.3 health check now uses its supported `REDISCLI_AUTH` compatibili
 The Caddy log directive now uses valid multiline syntax, and the edge service has an admin-API health check so a
 configuration crash loop cannot be reported as a successful Compose startup. CI validates the Caddyfile with the
 pinned production image before a deployment candidate is accepted.
+`QLM-BUG-001` fixes the missing `HMGET` permission in the `maps-gateway` Valkey ACL. That omission allowed catalog
+authentication but converted every rate-limited operation—including assets—into HTTP 503 responses.
+`QLM-BUG-002` corrects Valhalla's timestamp controls, Caddy's IPv4 health probe, and strict reverse-geocode coordinate
+validation. Live forward geocoding still needs one deployed adapter/cache diagnostic before its repair is selected.
 
 ### Next
 Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate

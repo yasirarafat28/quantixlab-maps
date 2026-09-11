@@ -33,6 +33,12 @@ describe('gateway HTTP contract', () => {
     const response = await request(app).post('/v1/routes').send({}); expect(response.status).toBe(401);
     expect(response.type).toBe('application/problem+json');
   });
+  it('uses parsed Express 5 query data without assigning to read-only req.query', async () => {
+    const response = await request(app).get('/v1/geocode/search').set('Authorization', 'Bearer qlm_sk_test')
+      .query({ q: 'Dhaka', countryCode: 'BD', limit: '1' });
+    expect(response.status).toBe(200); expect(response.body).toMatchObject({ items: [], datasetVersion: '2026-09-09.1' });
+    expect(response.headers['content-language']).toBe('en');
+  });
   it('rejects unknown fields and invalid profiles', async () => {
     const response = await request(app).post('/v1/routes').set('Authorization', 'Bearer qlm_sk_test').send({
       profile: 'AUTO', points: [{ latitude: 23.8, longitude: 90.4 }, { latitude: 23.7, longitude: 90.3 }], raw: true,

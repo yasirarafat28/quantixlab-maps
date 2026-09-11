@@ -21,4 +21,27 @@ describe('provider normalization', () => {
     const result = await new ValhallaProvider('http://valhalla:8002').route({ profile: 'WALKING', points: [{ latitude: 23.8, longitude: 90.4 }, { latitude: 23.7, longitude: 90.3 }] });
     expect(result.distanceMeters).toBe(2_000); expect(result.legs[0]?.maneuvers[0]?.distanceMeters).toBe(500);
   });
+  it('enables Valhalla timestamps for a complete monotonic GPS trace', async () => {
+    const mock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ trip: {
+      summary: { length: 1, time: 60 }, legs: [{ shape: 'matched', summary: { length: 1, time: 60 } }],
+    } }), { status: 200 })); vi.stubGlobal('fetch', mock);
+    await new ValhallaProvider('http://valhalla:8002').match({ profile: 'DRIVING', points: [
+      { latitude: 23.8, longitude: 90.4, timestampSeconds: 1_789_110_000 },
+      { latitude: 23.81, longitude: 90.41, timestampSeconds: 1_789_110_060 },
+    ] });
+    const body = JSON.parse(String(mock.mock.calls[0]![1]?.body)) as Record<string, unknown>;
+    expect(body).toMatchObject({ begin_time: 1_789_110_000, use_timestamps: true });
+  });
+  it('omits Valhalla timing controls for an incomplete GPS trace', async () => {
+    const mock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ trip: {
+      summary: { length: 1, time: 60 }, legs: [{ shape: 'matched', summary: { length: 1, time: 60 } }],
+    } }), { status: 200 })); vi.stubGlobal('fetch', mock);
+    await new ValhallaProvider('http://valhalla:8002').match({ profile: 'DRIVING', points: [
+      { latitude: 23.8, longitude: 90.4, timestampSeconds: 1_789_110_000 },
+      { latitude: 23.81, longitude: 90.41 },
+    ] });
+    const body = JSON.parse(String(mock.mock.calls[0]![1]?.body)) as Record<string, unknown>;
+    expect(body).not.toHaveProperty('begin_time'); expect(body).not.toHaveProperty('use_timestamps');
+    expect(body.shape).toEqual([{ lat: 23.8, lon: 90.4 }, { lat: 23.81, lon: 90.41 }]);
+  });
 });

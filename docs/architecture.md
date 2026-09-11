@@ -1,7 +1,7 @@
 # Architecture
 
 Quantix Lab Maps is one independently deployed platform. Caddy terminates TLS for `maps.quantixlab.dev` and the
-temporary `maps.tourbond.quantixlab.dev` alias. All public traffic enters the gateway; providers have no published
+temporary `tourbond-maps.quantixlab.dev` alias. All public traffic enters the gateway; providers have no published
 ports. Compute endpoints normalize Photon and Valhalla so consumers never depend on upstream response formats.
 
 ```text

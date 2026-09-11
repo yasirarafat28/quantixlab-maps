@@ -1,5 +1,5 @@
 MAP_DOMAIN=maps.quantixlab.dev
-MAP_COMPAT_DOMAIN=maps.tourbond.quantixlab.dev
+MAP_COMPAT_DOMAIN=tourbond-maps.quantixlab.dev
 MAP_CURRENT_DIR=/srv/quantixlab-maps/current
 PROJECTS_FILE=/etc/quantixlab-maps/projects.json
 MAPS_ENV_FILE=/etc/quantixlab-maps/maps.env

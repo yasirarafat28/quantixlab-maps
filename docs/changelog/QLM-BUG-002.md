@@ -1,0 +1,10 @@
+---
+title: Correct provider acceptance failures
+date: 2026-09-11
+task: QLM-BUG-002
+---
+
+- Forward complete monotonic GPS timestamps to Valhalla with its required timestamp controls.
+- Use Caddy's confirmed IPv4 admin listener for container health checks.
+- Validate only reverse-geocode coordinates against the strict regional coordinate schema.
+- Store parsed GET parameters in response-local state instead of assigning to Express 5's read-only `req.query`.

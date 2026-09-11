@@ -9,7 +9,8 @@ export const validate = (schema: ZodType, source: 'body' | 'query' = 'body') =>
       problem(res, req, 422, 'validation', 'Request validation failed', result.error.issues.map((i) => i.message).join('; '));
       return;
     }
-    req[source] = result.data;
+    if (source === 'query') res.locals.validatedQuery = result.data;
+    else req.body = result.data;
     next();
   };
 

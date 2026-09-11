@@ -32,8 +32,16 @@ export class ValhallaProvider {
   }
 
   async match(input: MatchRequest) {
+    const timestamps = input.points.map((point) => point.timestampSeconds);
+    const useTimestamps = timestamps.every((value) => value !== undefined)
+      && timestamps.every((value, index) => index === 0 || value! >= timestamps[index - 1]!);
     const data = await post<VTrip>(this.baseUrl, '/trace_route', {
-      shape: locations(input.points), costing: costing[input.profile], shape_match: 'map_snap', units: 'kilometers',
+      shape: input.points.map((point) => ({
+        lat: point.latitude, lon: point.longitude,
+        ...(useTimestamps ? { time: point.timestampSeconds } : {}),
+      })),
+      costing: costing[input.profile], shape_match: 'map_snap', units: 'kilometers',
+      ...(useTimestamps ? { begin_time: timestamps[0], use_timestamps: true } : {}),
     }, 15_000);
     const shape = data.trip.legs[0]?.shape; if (!shape) throw new UpstreamError('valhalla', 502, 'Matched shape missing');
     return { encodedPolyline6: shape,

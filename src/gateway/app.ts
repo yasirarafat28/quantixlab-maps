@@ -2,7 +2,8 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import swaggerUi from 'swagger-ui-express';
 import type { RedisLike } from '../rate-limits/redis.js';
 import { ATTRIBUTION, BOUNDS, COUNTRIES, LANGUAGES, PROFILES } from '../contracts/constants.js';
-import { GeocodeResponseSchema, SearchQuerySchema, ReverseQuerySchema } from '../contracts/geocode.js';
+import { GeocodeResponseSchema, SearchQuerySchema, ReverseQuerySchema,
+  type SearchQuery, type ReverseQuery } from '../contracts/geocode.js';
 import { MatchRequestSchema, MatchResponseSchema, MatrixRequestSchema, MatrixResponseSchema, RouteRequestSchema, RouteResponseSchema } from '../contracts/navigation.js';
 import { authorize } from '../auth/middleware.js';
 import type { ProjectStore } from '../auth/project-store.js';
@@ -48,12 +49,12 @@ export const createApp = (d: AppDependencies) => {
   }, express.json({ limit: '1mb', strict: true }));
   app.get('/v1/geocode/search', authorize(d.projects, 'secret', 'geocode:read'), rateLimit(d.rates, 'geocode'),
     validate(SearchQuerySchema, 'query'), async (req, res) => {
-      const query = req.query as any; res.set('Content-Language', query.language ?? 'en');
+      const query = res.locals.validatedQuery as SearchQuery; res.set('Content-Language', query.language ?? 'en');
       const items = await d.cache.getOrSet('geocode', query, req.datasetVersion, 300, () => d.photon.search(query)); req.upstreamOutcome = 'photon:success-or-cache'; res.json(GeocodeResponseSchema.parse({ ...meta(req), items }));
     });
   app.get('/v1/geocode/reverse', authorize(d.projects, 'secret', 'geocode:read'), rateLimit(d.rates, 'geocode'),
     validate(ReverseQuerySchema, 'query'), async (req, res) => {
-      const query = req.query as any; res.set('Content-Language', query.language ?? 'en');
+      const query = res.locals.validatedQuery as ReverseQuery; res.set('Content-Language', query.language ?? 'en');
       const items = await d.cache.getOrSet('geocode', query, req.datasetVersion, 300, () => d.photon.reverse(query)); req.upstreamOutcome = 'photon:success-or-cache'; res.json(GeocodeResponseSchema.parse({ ...meta(req), items }));
     });
   app.post('/v1/routes', authorize(d.projects, 'secret', 'route:read'), rateLimit(d.rates, 'route'), validate(RouteRequestSchema),

@@ -23,7 +23,7 @@ Do not continue with placeholder image digests, unapproved data, or an uncommitt
 Create these DNS records with a low TTL during rollout:
 
 - `maps.quantixlab.dev` `A` -> `REPLACE_VPS_IPV4`
-- `maps.tourbond.quantixlab.dev` `A` -> `REPLACE_VPS_IPV4` for the 90-day migration window
+- `tourbond-maps.quantixlab.dev` `A` -> `REPLACE_VPS_IPV4` for the 90-day migration window
 - Add `AAAA` only after IPv6 routing and firewall rules are verified.
 
 At the provider firewall allow TCP 22 only from `REPLACE_SSH_CIDR`, TCP 80/443 from the internet, and UDP 443 from the
@@ -117,7 +117,8 @@ Generate distinct values with `openssl rand -base64 48` and store them in a pass
 `MAP_KEY_HASH_SECRET`, `OPERATOR_TOKEN`, and the password inside `REDIS_URL`. In `deploy.env`, set the same Valkey
 password where required, a separate health password, all real `@sha256:` image references, and the production paths.
 Hash the two Valkey passwords with `valkey-cli ACL HASH-PASSWORD`, replace both ACL placeholders, and retain only the
-hashes in `users.acl`. ACL files contain only `user` rules; keep explanatory comments outside that file. If
+hashes in `users.acl`. Preserve every command in the template, including `+hmget`, because the gateway's rate limiter
+uses it inside Lua. ACL files contain only `user` rules; keep explanatory comments outside that file. If
 `valkey-cli` is not installed on the host, run the pinned Valkey image interactively with
 `docker run --rm -it --entrypoint valkey-cli "$VALKEY_IMAGE"` and enter `ACL HASH-PASSWORD` there. Validate:
 

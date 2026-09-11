@@ -100,7 +100,7 @@ services:
 
   caddy:
     image: ${CADDY_IMAGE:?set a digest-pinned Caddy 2.10.2 image}
-    environment: { MAP_DOMAIN: "${MAP_DOMAIN:-maps.quantixlab.dev}", MAP_COMPAT_DOMAIN: "${MAP_COMPAT_DOMAIN:-maps.tourbond.quantixlab.dev}" }
+    environment: { MAP_DOMAIN: "${MAP_DOMAIN:-maps.quantixlab.dev}", MAP_COMPAT_DOMAIN: "${MAP_COMPAT_DOMAIN:-tourbond-maps.quantixlab.dev}" }
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
@@ -115,7 +115,7 @@ services:
     cap_add: [NET_BIND_SERVICE]
     security_opt: [no-new-privileges:true]
     healthcheck:
-      test: [CMD, wget, -qO-, http://localhost:2019/config/]
+      test: [CMD, wget, -qO-, http://127.0.0.1:2019/config/]
       interval: 10s
       timeout: 3s
       retries: 10
