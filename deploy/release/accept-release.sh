@@ -20,7 +20,7 @@ jq -c '.[]' "$fixtures" | while read -r fixture; do
   code="$(jq -r .countryCode <<<"$fixture")"; query="$(jq -r .query <<<"$fixture")"; lat="$(jq -r .latitude <<<"$fixture")"; lon="$(jq -r .longitude <<<"$fixture")"
   curl --get --fail --silent --show-error "${server[@]}" --data-urlencode "q=$query" --data-urlencode "countryCode=$code" "$MAP_PUBLIC_BASE_URL/v1/geocode/search" | jq -e '.items | length > 0' >/dev/null
   curl --fail --silent --show-error "${server[@]}" "$MAP_PUBLIC_BASE_URL/v1/geocode/reverse?latitude=$lat&longitude=$lon&limit=1" | jq -e '.items | type == "array"' >/dev/null
-  body="$(jq -nc --argjson lat "$lat" --argjson lon "$lon" '{profile:"DRIVING",sources:[{latitude:$lat,longitude:$lon}],targets:[{latitude:$lat+0.005,longitude:$lon+0.005}]}')"
+  body="$(jq -nc --argjson lat "$lat" --argjson lon "$lon" '{profile:"DRIVING",sources:[{latitude:$lat,longitude:$lon}],targets:[{latitude:($lat + 0.005),longitude:($lon + 0.005)}]}')"
   curl --fail --silent --show-error "${server[@]}" -H 'Content-Type: application/json' -d "$body" "$MAP_PUBLIC_BASE_URL/v1/matrices" | jq -e '.distancesMeters | length == 1' >/dev/null
   echo "accepted $code"
 done

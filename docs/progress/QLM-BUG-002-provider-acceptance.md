@@ -20,7 +20,7 @@ generation, and whitespace validation pass. The deployed Photon adapter, respons
 forward geocoding failed because Express 5 exposes `req.query` as read-only, so validated query data now uses
 response-local state instead.
 Release acceptance now uses a verified road-following Dhaka trace whose sample gaps remain below Valhalla's configured
-2 km breakage limit.
+2 km breakage limit, and its generated matrix coordinates use valid parenthesized `jq` arithmetic.
 
 ### Next
 Publish corrected immutable gateway candidate `v1.0.14` and complete live acceptance.

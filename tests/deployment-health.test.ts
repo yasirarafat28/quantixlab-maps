@@ -23,4 +23,10 @@ describe('production container health checks', () => {
       expect(6_371_000 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value))).toBeLessThan(2_000);
     }
   });
+
+  it('parenthesizes jq arithmetic in the matrix fixture', () => {
+    const script = readFileSync('deploy/release/accept-release.sh', 'utf8');
+    expect(script).toContain('latitude:($lat + 0.005),longitude:($lon + 0.005)');
+    expect(script).not.toContain('latitude:$lat+0.005');
+  });
 });
