@@ -27,6 +27,7 @@ describe('versioned basemap styles', () => {
       expect(expression).toContain('name:latin');
       expect(expression).toContain('name:en');
       expect(expression).toContain('ref');
+      expect(expression.indexOf('name:en')).toBeLessThan(expression.indexOf('name:latin'));
     }
   });
 

@@ -6,6 +6,12 @@ Date: 2026-09-09
 - Added scoped publishable/server credentials, atomic file reload, rotation/revocation CLI, Valkey limits and usage.
 - Added private provider networking, Caddy canonical/compatibility domains, digest-enforced container configuration.
 - Added immutable regional builds, multilingual Photon/font preparation, R2 publishing, acceptance, and rollback.
+- Corrected trace duration aggregation, added matched-polyline distance and GPS-time fallbacks, and strengthened
+  release acceptance against zero-distance matches and missing host/font tooling.
+- Added English-first legacy road/place labels so the current PMTiles can gain readable labels without a data rebuild;
+  the complete multilingual v2 cartography remains coupled to a future regional dataset release.
+- Added immutable style-only releases and a dedicated gateway style mount, allowing presentation rollback without
+  mutating or rebuilding active PMTiles, Photon, or Valhalla data.
 - Added generated OpenAPI and TypeScript types, Dart/TypeScript clients, CI, image provenance, tests, and operations docs.
 - Kept large regional artifacts and the existing TourBond maps lifecycle out of scope for local mutation.
 - Expanded the Ubuntu runbook into a gated, command-oriented VPS bootstrap, deployment, and acceptance procedure.

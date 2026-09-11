@@ -6,6 +6,7 @@ services:
     env_file: ${MAPS_ENV_FILE:-/etc/quantixlab-maps/maps.env}
     volumes:
       - ${MAP_CURRENT_DIR:?set MAP_CURRENT_DIR}:/srv/quantixlab-maps/current:ro
+      - ${MAP_STYLES_DIR:?set MAP_STYLES_DIR}:/srv/quantixlab-maps/current/styles:ro
       - ${PROJECTS_FILE:?set PROJECTS_FILE}:/etc/quantixlab-maps/projects.json:ro
     ports: ["127.0.0.1:${OPERATOR_PORT:-8080}:8080"]
     depends_on:

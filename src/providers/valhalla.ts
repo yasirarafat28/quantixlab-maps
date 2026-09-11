@@ -66,10 +66,18 @@ export class ValhallaProvider {
         'matched.distance_along_edge', 'matched.distance_from_trace_point', 'edge.length', 'edge.speed', 'shape_attributes.time'] },
     }, 15_000);
     if (!data.shape) throw new UpstreamError('valhalla', 502, 'Matched shape missing');
-    const distanceMeters = (data.edges ?? []).reduce((sum, edge) => sum + (edge.length ?? 0) * 1_000, 0);
+    const edges = data.edges ?? [];
+    const edgeDistanceMeters = edges.reduce((sum, edge) => sum + (edge.length ?? 0) * 1_000, 0);
+    const distanceMeters = edgeDistanceMeters > 0 ? edgeDistanceMeters : polylineDistance(data.shape);
     const times = data.shape_attributes?.time ?? [];
-    const durationSeconds = times.length > 0 ? times[times.length - 1]! : (data.edges ?? []).reduce(
-      (sum, edge) => sum + (edge.speed && edge.length ? edge.length / edge.speed * 3_600 : 0), 0);
+    const edgeDurationSeconds = edges.length > 0 && edges.every((edge) => edge.speed && edge.length !== undefined)
+      ? edges.reduce((sum, edge) => sum + edge.length! / edge.speed! * 3_600, 0) : undefined;
+    const traceDurationSeconds = useTimestamps ? timestamps.at(-1)! - timestamps[0]! : undefined;
+    const durationSeconds = times.length > 0 ? times.reduce((sum, time) => sum + time, 0)
+      : edgeDurationSeconds ?? traceDurationSeconds;
+    if (durationSeconds === undefined && distanceMeters > 0) {
+      throw new UpstreamError('valhalla', 502, 'Matched duration missing');
+    }
     return { encodedPolyline6: data.shape, distanceMeters, durationSeconds,
       matchedPoints: (data.matched_points ?? []).map((point) => ({ latitude: point.lat, longitude: point.lon,
         matchType: matchType(point.type), ...(point.edge_index === undefined ? {} : { edgeIndex: point.edge_index }),
@@ -89,3 +97,22 @@ export class ValhallaProvider {
 
 const matchType = (value: string): 'MATCHED' | 'INTERPOLATED' | 'UNMATCHED' =>
   value === 'matched' ? 'MATCHED' : value === 'interpolated' ? 'INTERPOLATED' : 'UNMATCHED';
+
+const polylineDistance = (encoded: string): number => {
+  const points: Array<[number, number]> = []; let index = 0; let latitude = 0; let longitude = 0;
+  const read = (): number => {
+    let result = 0; let shift = 0; let byte: number;
+    do { byte = encoded.charCodeAt(index++) - 63; result |= (byte & 0x1f) << shift; shift += 5; } while (byte >= 0x20);
+    return result & 1 ? ~(result >> 1) : result >> 1;
+  };
+  while (index < encoded.length) { latitude += read(); longitude += read(); points.push([latitude / 1e6, longitude / 1e6]); }
+  return points.slice(1).reduce((sum, point, offset) => sum + haversine(points[offset]!, point), 0);
+};
+
+const haversine = ([lat1, lon1]: [number, number], [lat2, lon2]: [number, number]): number => {
+  const radians = (degrees: number) => degrees * Math.PI / 180; const earthRadiusM = 6_371_008.8;
+  const deltaLat = radians(lat2 - lat1); const deltaLon = radians(lon2 - lon1);
+  const value = Math.sin(deltaLat / 2) ** 2
+    + Math.cos(radians(lat1)) * Math.cos(radians(lat2)) * Math.sin(deltaLon / 2) ** 2;
+  return earthRadiusM * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
+};

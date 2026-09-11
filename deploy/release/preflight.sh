@@ -7,7 +7,7 @@ minimum_ram_gib="${MIN_RAM_GIB:-32}"
 minimum_cpus="${MIN_CPUS:-8}"
 [[ "$(uname -s)" == Linux ]] || { echo 'release builds require Linux' >&2; exit 69; }
 case "$(uname -m)" in x86_64|aarch64|arm64) ;; *) echo 'unsupported CPU architecture' >&2; exit 69 ;; esac
-for command_name in curl docker jq md5sum osmium pmtiles sha256sum tar zstd; do
+for command_name in curl docker jq md5sum osmium pmtiles sha256sum strings tar zstd; do
   command -v "$command_name" >/dev/null || { echo "missing command: $command_name" >&2; exit 69; }
 done
 mkdir -p "$target"

@@ -54,6 +54,13 @@ unset PUBLISHABLE_KEY SERVER_KEY
 It tests styles, TileJSON, a vector tile, fonts, sprites, three route profiles, matching, matrices, and geocoding.
 Success ends with `public release acceptance passed`.
 
+## Style-only release
+
+Legacy labels can be updated without rebuilding PMTiles. Build an immutable style overlay, set `MAP_STYLES_DIR` to
+the printed directory, validate Compose, and recreate only `gateway`. Do not edit the active dataset's `styles`
+directory. Keep the previous deploy environment backup until public acceptance succeeds. The v2 files are published
+side by side but remain disabled in consumers until a compatible regional tile release passes device acceptance.
+
 ## DNS and TLS
 
 Both records are proxied. Apply a hostname-scoped Cloudflare Configuration Rule with SSL `Strict`; do not alter the

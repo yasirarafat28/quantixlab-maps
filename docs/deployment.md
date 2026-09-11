@@ -50,7 +50,7 @@ policy in `/etc/ssh/sshd_config.d/99-quantixlab.conf`, run `sudo sshd -t`, and k
 
 ```bash
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y ca-certificates curl git jq osmium-tool openssl tmux ufw unattended-upgrades unzip zstd
+sudo apt install -y binutils ca-certificates curl git jq osmium-tool openssl tmux ufw unattended-upgrades unzip zstd
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc

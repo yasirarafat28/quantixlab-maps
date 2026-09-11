@@ -63,6 +63,9 @@ authentication but converted every rate-limited operation—including assets—i
 `QLM-BUG-002` corrects Express 5 query handling, Valhalla timestamp controls, Caddy's IPv4 health probe, reverse
 geocode validation, and release acceptance fixtures. The digest-pinned `v1.0.14` gateway and all six containers are
 healthy; timestamped matching and the complete 18-country public acceptance pass in production.
+The next gateway candidate sums Valhalla segment times, derives missing edge distance from matched polyline6 geometry,
+uses real GPS elapsed time when provider timing is unavailable, and refuses to invent untimed duration. Legacy style
+templates now prefer English/Latin labels available in the active PMTiles without enabling the v2 basemap.
 
 ### Next
 Run the TourBond consumer smoke test, signed-device navigation acceptance, and planned production load test.

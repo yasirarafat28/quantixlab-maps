@@ -30,10 +30,10 @@ describe('provider normalization', () => {
   });
   it('enables Valhalla timestamps for a complete monotonic GPS trace', async () => {
     const mock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ shape: 'matched',
-      edges: [{ length: 1, speed: 60 }], shape_attributes: { time: [0, 60] }, matched_points: [
+      edges: [{ length: 1, speed: 60 }], shape_attributes: { time: [0, 20, 40] }, matched_points: [
         { lat: 23.8, lon: 90.4, type: 'matched', edge_index: 0, distance_along_edge: 0.4, distance_from_trace_point: 3 },
       ] }), { status: 200 })); vi.stubGlobal('fetch', mock);
-    await new ValhallaProvider('http://valhalla:8002').match({ profile: 'DRIVING', points: [
+    const result = await new ValhallaProvider('http://valhalla:8002').match({ profile: 'DRIVING', points: [
       { latitude: 23.8, longitude: 90.4, timestampSeconds: 1_789_110_000 },
       { latitude: 23.81, longitude: 90.41, timestampSeconds: 1_789_110_060 },
     ], gpsAccuracyM: 8, searchRadiusM: 30 });
@@ -41,6 +41,25 @@ describe('provider normalization', () => {
     expect(String(mock.mock.calls[0]![0])).toContain('/trace_attributes');
     expect(body).toMatchObject({ begin_time: 1_789_110_000, use_timestamps: true, gps_accuracy: 8, search_radius: 30 });
     expect(body).toHaveProperty('filters');
+    expect(result.durationSeconds).toBe(60);
+  });
+  it('falls back to matched geometry and GPS elapsed time when edges are absent', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      shape: 'gfo}EtohhUxD@bAxJmGF', edges: [], matched_points: [],
+    }), { status: 200 })));
+    const result = await new ValhallaProvider('http://valhalla:8002').match({ profile: 'DRIVING', points: [
+      { latitude: 23.8, longitude: 90.4, timestampSeconds: 1_789_110_000 },
+      { latitude: 23.81, longitude: 90.41, timestampSeconds: 1_789_110_060 },
+    ] });
+    expect(result.distanceMeters).toBeGreaterThan(0); expect(result.durationSeconds).toBe(60);
+  });
+  it('does not invent duration for an untimed match without provider timing', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      shape: 'gfo}EtohhUxD@bAxJmGF', edges: [], matched_points: [],
+    }), { status: 200 })));
+    await expect(new ValhallaProvider('http://valhalla:8002').match({ profile: 'DRIVING', points: [
+      { latitude: 23.8, longitude: 90.4 }, { latitude: 23.81, longitude: 90.41 },
+    ] })).rejects.toMatchObject({ provider: 'valhalla', status: 502, message: 'Matched duration missing' });
   });
   it('omits Valhalla timing controls for an incomplete GPS trace', async () => {
     const mock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ shape: 'matched', edges: [] }), { status: 200 })); vi.stubGlobal('fetch', mock);

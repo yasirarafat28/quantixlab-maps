@@ -56,8 +56,11 @@ curl -H "X-Quantix-Maps-Key: $MAPS_PUBLISHABLE_KEY" \
   https://maps.quantixlab.dev/v1/catalog
 ```
 
-MapLibre should load `/v1/styles/light.json` or `/v1/styles/dark.json` with the publishable-key header. Styles refer
-to authenticated TileJSON, vector tile, glyph, and sprite URLs. Do not call Martin directly.
+MapLibre should load `/v1/styles/light.json` or `/v1/styles/dark.json` with the publishable-key header. These legacy
+styles prefer English, then Latin, local, and reference labels against the current dataset. Rebuilt multilingual
+datasets additionally provide `/v1/styles/light-v2.json` and `/v1/styles/dark-v2.json`; enable those only after tile
+and device acceptance. Styles refer to authenticated TileJSON, vector tile, glyph, and sprite URLs. Do not call
+Martin directly.
 
 ## Forward and reverse geocoding
 
@@ -77,8 +80,9 @@ curl --get -H "Authorization: Bearer $MAPS_SERVER_KEY" \
 
 ## Routes
 
-`POST /v1/routes` accepts 2–25 points, a profile, and optional language. The response contains totals and legs with
-`encodedPolyline6` and maneuvers.
+`POST /v1/routes` accepts 2–25 points, a profile, and optional language. A point may include `headingDegrees`,
+`headingToleranceDegrees`, and `radiusMeters` to constrain road selection. The response contains totals and legs
+with `encodedPolyline6`; maneuvers may include road names, sign text, and verbal transition instructions.
 
 ```bash
 curl -H "Authorization: Bearer $MAPS_SERVER_KEY" -H 'Content-Type: application/json' \
@@ -88,8 +92,10 @@ curl -H "Authorization: Bearer $MAPS_SERVER_KEY" -H 'Content-Type: application/j
 
 ## Trace matching
 
-`POST /v1/matches` accepts 2–2,000 points. Each may include a nonnegative integer `timestampSeconds`. The result has
-the matched polyline, distance, duration, and optional confidence.
+`POST /v1/matches` accepts 2–2,000 points. Each may include a nonnegative integer `timestampSeconds`; the request may
+also include `gpsAccuracyM` and `searchRadiusM` from 0–100 meters. The result has the matched polyline, distance,
+duration, optional confidence, and one normalized `matchedPoints` entry per trace point when Valhalla supplies it.
+Each matched point reports `MATCHED`, `INTERPOLATED`, or `UNMATCHED` plus available edge and offset metadata.
 
 ```json
 {"profile":"DRIVING","points":[
