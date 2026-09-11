@@ -60,9 +60,9 @@ configuration crash loop cannot be reported as a successful Compose startup. CI 
 pinned production image before a deployment candidate is accepted.
 `QLM-BUG-001` fixes the missing `HMGET` permission in the `maps-gateway` Valkey ACL. That omission allowed catalog
 authentication but converted every rate-limited operation—including assets—into HTTP 503 responses.
-`QLM-BUG-002` corrects Valhalla's timestamp controls, Caddy's IPv4 health probe, and strict reverse-geocode coordinate
-validation. Live forward geocoding still needs one deployed adapter/cache diagnostic before its repair is selected.
+`QLM-BUG-002` corrects Express 5 query handling, Valhalla timestamp controls, Caddy's IPv4 health probe, reverse
+geocode validation, and release acceptance fixtures. The digest-pinned `v1.0.14` gateway and all six containers are
+healthy; timestamped matching and the complete 18-country public acceptance pass in production.
 
 ### Next
-Rebuild `2026-09-09.1` with the corrected tile bounds on Ubuntu, run regional/device/load acceptance, then migrate
-TourBond and begin the 90-day alias window.
+Run the TourBond consumer smoke test, signed-device navigation acceptance, and planned production load test.

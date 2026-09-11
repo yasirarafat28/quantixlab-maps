@@ -1,9 +1,9 @@
 ---
 title: QLM-BUG-002 Provider Acceptance Failures
 date: 2026-09-11
-status: In Progress
+status: Complete
 owner: @yasir
-nextTask: Production provider recovery
+nextTask: TourBond consumer acceptance
 ---
 
 ### What/Why/Where
@@ -25,4 +25,7 @@ The runner uses bounded `curl` retries for transient and rate-limited responses 
 18 matrix requests while the default matrix quota is 10 requests per minute.
 
 ### Next
-Publish corrected immutable gateway candidate `v1.0.14` and complete live acceptance.
+Run the TourBond backend/app consumer smoke test and signed-device navigation acceptance.
+
+Production evidence confirms `v1.0.14` is deployed by immutable gateway digest, all six containers are healthy,
+timestamped matching returns HTTP 200, and the complete 18-country public release acceptance exits successfully.
